@@ -1,0 +1,147 @@
+Comparison results: Modified Heavy Ball vs CG-DESCENT-6.8 (with default parameters)
+
+
+Stopping condition: ||g_k||_{\infty} <= 1E-6
+
+Test set consists of the 45 CUTEr unconstrained optimization problems  
+
+Computer: Intel(R) Core(TM) 2Duo CPU T7500 2.20 GHz, 2.00 GB of RAM
+
+=====================================================================================
+Problem      		Dimension   		Method    		Seconds
+ (Dim)
+=====================================================================================
+ARWHEAD 		5000			MHB			0.002
+ 						CG-DESCENT-6.8		0.008 
+
+BDQRTIC      		5000 			MHB			0.139
+ 						CG-DESCENT-6.8		0.351  	
+   
+BROYDN7D      		5000 			MHB			3.057
+ 						CG-DESCENT-6.8		1.704 
+
+BRYBND      		5000 			MHB			0.052
+ 						CG-DESCENT-6.8		0.024
+
+CHAINWOO      		4000 			MHB			0.705
+ 						CG-DESCENT-6.8		0.481
+
+COSINE       		10000 			MHB			0.019
+ 						CG-DESCENT-6.8		0.018
+
+CRAGGLVY       		5000 			MHB			0.333
+ 						CG-DESCENT-6.8		0.260 
+
+CURLY10      		500 			MHB			2.168
+ 						CG-DESCENT-6.8		0.485 
+
+CURLY20      		500 			MHB			2.845
+ 						CG-DESCENT-6.8		0.617
+
+CURLY30      		500 			MHB			2.905
+ 						CG-DESCENT-6.8		0.712
+
+DIXMAANA      		5000 			MHB			0.003
+ 						CG-DESCENT-6.8		0.011
+
+DIXMAANB      		5000 			MHB			0.004
+ 						CG-DESCENT-6.8		0.007
+
+DIXMAANC      		5000 			MHB			0.004
+ 						CG-DESCENT-6.8		0.007
+
+DIXMAAND      		5000 			MHB			0.004
+ 						CG-DESCENT-6.8		0.007
+
+DIXMAANE      		3000 			MHB			0.073
+ 						CG-DESCENT-6.8		0.169
+
+DIXMAANF      		3000 			MHB			0.040
+ 						CG-DESCENT-6.8		0.092
+
+DIXMAANG      		3000 			MHB			0.045
+ 						CG-DESCENT-6.8		0.098
+
+DIXMAANH      		3000 			MHB			0.029
+ 						CG-DESCENT-6.8		0.109
+
+DIXMAANI      		3000 			MHB			0.131
+ 						CG-DESCENT-6.8		3.114
+
+DIXMAANJ      		3000 			MHB			0.028
+ 						CG-DESCENT-6.8		0.278
+
+DIXMAANK      		3000 			MHB			0.024
+ 						CG-DESCENT-6.8		0.294
+
+DIXMAANL      		3000 			MHB			0.022
+ 						CG-DESCENT-6.8		0.214
+
+DIXON3DQ      		5000 			MHB			0.402
+ 						CG-DESCENT-6.8		0.311
+
+DQDRTIC      		10000 			MHB			0.024
+ 						CG-DESCENT-6.8		0.016
+
+DQRTIC      		5000 			MHB			0.075
+ 						CG-DESCENT-6.8		0.016
+
+EDENSCH      		2000 			MHB			0.020
+ 						CG-DESCENT-6.8		0.016
+
+EG2      		5000 			MHB			0.005
+ 						CG-DESCENT-6.8		0.003
+
+ENGVAL1      		5000 			MHB			0.047
+ 						CG-DESCENT-6.8		0.028
+
+
+EXTROSNB      		1000 			MHB			0.031
+ 						CG-DESCENT-6.8		0.475
+
+FLETCHCR      		1000 			MHB			0.039
+ 						CG-DESCENT-6.8		0.304
+
+FREUROTH      		5000 			MHB			0.061
+ 						CG-DESCENT-6.8		0.005
+
+GENHUMPS       		5000 			MHB			0.083
+ 						CG-DESCENT-6.8		0.106
+
+GENROSE      		1000 			MHB			0.002
+ 						CG-DESCENT-6.8		0.001
+
+LIARWHD      		5000 			MHB			1.512
+ 						CG-DESCENT-6.8		0.002
+
+
+MOREBV       		5000 			MHB			0.000
+ 						CG-DESCENT-6.8		0.001
+
+NONCVXU2      		1000 			MHB			0.257
+ 						CG-DESCENT-6.8		0.183
+
+NONDIA      		10000 			MHB			287.817
+ 						CG-DESCENT-6.8		0.002
+
+NONDQUAR      		10000 			MHB			5.367
+ 						CG-DESCENT-6.8		5.07
+
+PENALTY1      		1000 			MHB			0.008
+ 						CG-DESCENT-6.8		0.004
+
+PENALTY2      		100 			MHB			0.002
+ 						CG-DESCENT-6.8		0.003
+
+POWER      		1000 			MHB			0.059
+ 						CG-DESCENT-6.8		0.021
+
+SROSENBR      		10000 			MHB			0.089
+ 						CG-DESCENT-6.8		0.005
+
+TRIDIA       		10000 			MHB			0.317
+ 						CG-DESCENT-6.8		0.264
+
+WOODS        		10000 			MHB			0.264
+ 						CG-DESCENT-6.8		0.084
+
