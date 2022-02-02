@@ -5,14 +5,15 @@
 
 using namespace std;
 
-
 int main()
 {
-	//runUCONFoat50Tests();
+	//	runUCONFoat50Tests();
 
-	//runUCONDoubleTests();
+    //runUCONDoubleTests();
 
-	// runUCONHybridTests();
+	//runUCONHybridTests();
 
 	runANNDoubleTest();
+
+	//runANNLongFloatTest();
 }
