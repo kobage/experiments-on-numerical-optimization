@@ -186,6 +186,8 @@ typedef struct cg_parameter_struct /* user controlled parameters */
 	double           qrule; /* parameter used to decide if cost is quadratic */
 	int           qrestart; /* number of iterations the function should be
 							nearly quadratic before a restart */
+	//pointer to stopping condition (K.G.)  - - - - - - - - - - - - - - - - - - 
+	bool	(*stop)();
 } cg_parameter;
 
 typedef struct cg_stats_struct /* statistics returned to user */

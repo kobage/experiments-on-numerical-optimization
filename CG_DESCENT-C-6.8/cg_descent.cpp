@@ -56,7 +56,6 @@ ________________________________________________________________
 |Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, |
 |MA  02110-1301  USA                                             |
 |________________________________________________________________|
-
 References:
 1. W. W. Hager and H. Zhang, A new conjugate gradient method
 with guaranteed descent and an efficient line search,
@@ -94,18 +93,18 @@ int cg_descent /*  return status of solution process:
 			   11 (function nan or +-INF and could not be repaired)
 			   12 (invalid choice for memory parameter) */
 			   (
-				   double            *x, /* input: starting guess, output: the solution */
+				   double* x, /* input: starting guess, output: the solution */
 				   INT                n, /* problem dimension */
-				   cg_stats       *Stat, /* structure with statistics (can be NULL) */
-				   cg_parameter  *UParm, /* user parameters, NULL = use default parameters */
+				   cg_stats* Stat, /* structure with statistics (can be NULL) */
+				   cg_parameter* UParm, /* user parameters, NULL = use default parameters */
 				   double      grad_tol, /* StopRule = 1: |g|_infty <= max (grad_tol,
 										 StopFac*initial |g|_infty) [default]
 										 StopRule = 0: |g|_infty <= grad_tol(1+|f|) */
-				   double(*value) (double *, INT),  /* f = value (x, n) */
-				   void(*grad) (double *, double *, INT), /* grad (g, x, n) */
-				   double(*valgrad) (double *, double *, INT), /* f = valgrad (g, x, n),
+				   double(*value) (double*, INT),  /* f = value (x, n) */
+				   void(*grad) (double*, double*, INT), /* grad (g, x, n) */
+				   double(*valgrad) (double*, double*, INT), /* f = valgrad (g, x, n),
 															   NULL = compute value & gradient using value & grad */
-				   double         *Work  /* NULL => let code allocate memory
+				   double* Work  /* NULL => let code allocate memory
 										 not NULL => use array Work for required memory
 										 The amount of memory needed depends on the value
 										 of the parameter memory in the Parm structure.
@@ -120,7 +119,7 @@ int cg_descent /*  return status of solution process:
 		f, ftemp, gnorm, xnorm, gnorm2, dnorm2, denom,
 		t, dphi, dphi0, alpha,
 		ykyk, ykgk, dkyk, beta, QuadTrust, tol,
-		*d, *g = NULL, *xtemp = NULL, *gtemp = NULL, *work = NULL;
+		* d, * g = NULL, * xtemp = NULL, * gtemp = NULL, * work = NULL;
 
 	/* new variables added in Version 6.0 */
 	int     l1, l2, j, k, mem, memsq, memk, memk_begin, mlast, mlast_sub,
@@ -131,10 +130,10 @@ int cg_descent /*  return status of solution process:
 		d0isg, qrestart;
 	double  gHg, scale, gsubnorm2, ratio, stgkeep,
 		alphaold, zeta, yty, ytg, t1, t2, t3, t4,
-		*Rk = NULL, *Re = NULL, *Sk = NULL, *SkF = NULL, *stemp = NULL, *Yk = NULL, *SkYk = NULL,
-		*dsub = NULL, *gsub = NULL, *gsubtemp = NULL, *gkeep = NULL, *tau = NULL, *vsub = NULL, *wsub = NULL;
+		* Rk = NULL, * Re = NULL, * Sk = NULL, * SkF = NULL, * stemp = NULL, * Yk = NULL, * SkYk = NULL,
+		* dsub = NULL, * gsub = NULL, * gsubtemp = NULL, * gkeep = NULL, * tau = NULL, * vsub = NULL, * wsub = NULL;
 
-	cg_parameter *Parm, ParmStruc;
+	cg_parameter* Parm, ParmStruc;
 	cg_com Com;
 
 	/* assign values to the external variables */
@@ -175,16 +174,16 @@ int cg_descent /*  return status of solution process:
 	{
 		if (mem == 0) /* original CG_DESCENT without memory */
 		{
-			work = (double *)malloc(4 * n * sizeof(double));
+			work = (double*)malloc(4 * n * sizeof(double));
 		}
 		else if (Parm->LBFGS || (mem >= n)) /* use L-BFGS */
 		{
-			work = (double *)malloc((2 * mem*(n + 1) + 4 * n) * sizeof(double));
+			work = (double*)malloc((2 * mem * (n + 1) + 4 * n) * sizeof(double));
 		}
 		else /* limited memory CG_DESCENT */
 		{
-			i = (mem + 6)*n + (3 * mem + 9)*mem + 5;
-			work = (double *)malloc(i * sizeof(double));
+			i = (mem + 6) * n + (3 * mem + 9) * mem + 5;
+			work = (double*)malloc(i * sizeof(double));
 		}
 	}
 	else work = Work;
@@ -214,7 +213,7 @@ int cg_descent /*  return status of solution process:
 	memk = 0;         /* number of vectors in current memory */
 
 					  /* the conjugate gradient algorithm is restarted every nrestart iteration */
-	nrestart = (INT)(((double)n)*Parm->restart_fac);
+	nrestart = (INT)(((double)n) * Parm->restart_fac);
 
 	/* allocate storage connected with limited memory CG */
 	if (mem > 0)
@@ -224,22 +223,22 @@ int cg_descent /*  return status of solution process:
 			LBFGS = TRUE;      /* use L-BFGS */
 			mlast = -1;
 			Sk = gtemp + n;
-			Yk = Sk + mem*n;
-			SkYk = Yk + mem*n;
+			Yk = Sk + mem * n;
+			SkYk = Yk + mem * n;
 			tau = SkYk + mem;
 		}
 		else
 		{
 			UseMemory = TRUE; /* previous search direction will be saved */
 			SubSkip = 0;      /* number of iterations to skip checking memory*/
-			SubCheck = mem*Parm->SubCheck; /* number of iterations to check */
+			SubCheck = mem * Parm->SubCheck; /* number of iterations to check */
 			StartCheck = 0;   /* start checking memory at iteration 0 */
 			InvariantSpace = FALSE; /* iterations not in invariant space */
 			FirstFull = TRUE;       /* first iteration in full space */
 			nsub = 0;               /* initial subspace dimension */
-			memsq = mem*mem;
+			memsq = mem * mem;
 			SkF = gtemp + n;    /* directions in memory (x_k+1 - x_k) */
-			stemp = SkF + mem*n;/* stores x_k+1 - x_k */
+			stemp = SkF + mem * n;/* stores x_k+1 - x_k */
 			gkeep = stemp + n;  /* store gradient when first direction != -g */
 			Sk = gkeep + n;   /* Sk = Rk at start of LBFGS in subspace */
 			Rk = Sk + memsq;  /* upper triangular factor in SkF = Zk*Rk */
@@ -272,7 +271,7 @@ int cg_descent /*  return status of solution process:
 
 	/* initial function and gradient evaluations, initial direction */
 	Com.alpha = ZERO;
-	status = cg_evaluate("fg", "n", &Com);
+	status = cg_evaluate((char*)"fg", (char*)"n", &Com);
 	f = Com.f;
 	if (status)
 	{
@@ -281,7 +280,7 @@ int cg_descent /*  return status of solution process:
 	}
 
 	Com.f0 = f + f;
-	Com.SmallCost = fabs(f)*Parm->SmallCost;
+	Com.SmallCost = fabs(f) * Parm->SmallCost;
 	xnorm = cg_inf(x, n);
 
 	/* set d = -g, compute gnorm  = infinity norm of g and
@@ -296,7 +295,7 @@ int cg_descent /*  return status of solution process:
 		goto Exit;
 	}
 
-	if (Parm->StopRule) tol = MAX(gnorm*Parm->StopFac, grad_tol);
+	if (Parm->StopRule) tol = MAX(gnorm * Parm->StopFac, grad_tol);
 	else                  tol = grad_tol;
 	Com.tol = tol;
 
@@ -320,13 +319,13 @@ int cg_descent /*  return status of solution process:
 	{
 		if (xnorm == ZERO)
 		{
-			if (f != ZERO) alpha = 2.*fabs(f) / gnorm2;
+			if (f != ZERO) alpha = 2. * fabs(f) / gnorm2;
 			else             alpha = ONE;
 		}
-		else    alpha = Parm->psi0*xnorm / gnorm;
+		else    alpha = Parm->psi0 * xnorm / gnorm;
 	}
 
-	Com.df0 = -2.0*fabs(f) / alpha;
+	Com.df0 = -2.0 * fabs(f) / alpha;
 
 	Restart = FALSE;    /* do not restart the algorithm */
 	IterRestart = 0;    /* counts number of iterations since last restart */
@@ -348,7 +347,7 @@ int cg_descent /*  return status of solution process:
 		/* save old alpha to simplify formula computing subspace direction */
 		alphaold = alpha;
 		Com.QuadOK = FALSE;
-		alpha = Parm->psi2*alpha;
+		alpha = Parm->psi2 * alpha;
 		if (f != ZERO) t = fabs((f - Com.f0) / f);
 		else             t = ONE;
 		Com.UseCubic = TRUE;
@@ -360,8 +359,8 @@ int cg_descent /*  return status of solution process:
 			{
 				if (QuadF)
 				{
-					Com.alpha = Parm->psi1*alpha;
-					status = cg_evaluate("g", "y", &Com);
+					Com.alpha = Parm->psi1 * alpha;
+					status = cg_evaluate((char*)"g", (char*)"y", &Com);
 					if (status) goto Exit;
 					if (Com.df > dphi0)
 					{
@@ -389,18 +388,18 @@ int cg_descent /*  return status of solution process:
 				}
 				else
 				{
-					t = MAX(Parm->psi_lo, Com.df0 / (dphi0*Parm->psi2));
-					Com.alpha = MIN(t, Parm->psi_hi)*alpha;
-					status = cg_evaluate("f", "y", &Com);
+					t = MAX(Parm->psi_lo, Com.df0 / (dphi0 * Parm->psi2));
+					Com.alpha = MIN(t, Parm->psi_hi) * alpha;
+					status = cg_evaluate((char*)"f", (char*)"y", &Com);
 					if (status) goto Exit;
 					ftemp = Com.f;
-					denom = 2.*(((ftemp - f) / Com.alpha) - dphi0);
+					denom = 2. * (((ftemp - f) / Com.alpha) - dphi0);
 					if (denom > ZERO)
 					{
-						t = -dphi0*Com.alpha / denom;
+						t = -dphi0 * Com.alpha / denom;
 						/* safeguard */
 						if (ftemp >= f)
-							alpha = MAX(t, Com.alpha*Parm->QuadSafe);
+							alpha = MAX(t, Com.alpha * Parm->QuadSafe);
 						else  alpha = t;
 						Com.QuadOK = TRUE;
 					}
@@ -429,15 +428,15 @@ int cg_descent /*  return status of solution process:
 
 		/* parameters in Wolfe and approximate Wolfe conditions, and in update*/
 
-		Qk = Parm->Qdecay*Qk + ONE;
+		Qk = Parm->Qdecay * Qk + ONE;
 		Ck = Ck + (fabs(f) - Ck) / Qk;        /* average cost magnitude */
 
-		if (Com.PertRule) Com.fpert = f + Com.eps*fabs(f);
+		if (Com.PertRule) Com.fpert = f + Com.eps * fabs(f);
 		else                Com.fpert = f + Com.eps;
 
-		Com.wolfe_hi = Parm->delta*dphi0;
-		Com.wolfe_lo = Parm->sigma*dphi0;
-		Com.awolfe_hi = delta2*dphi0;
+		Com.wolfe_hi = Parm->delta * dphi0;
+		Com.wolfe_lo = Parm->sigma * dphi0;
+		Com.awolfe_hi = delta2 * dphi0;
 		Com.alpha = alpha;
 
 		/* perform line search */
@@ -466,7 +465,7 @@ int cg_descent /*  return status of solution process:
 		/* Test for convergence to within machine epsilon
 		[set feps to zero to remove this test] */
 
-		if (-alpha*dphi0 <= Parm->feps*fabs(f))
+		if (-alpha * dphi0 <= Parm->feps * fabs(f))
 		{
 			status = 1;
 			goto Exit;
@@ -474,9 +473,9 @@ int cg_descent /*  return status of solution process:
 
 		/* test how close the cost function changes are to that of a quadratic
 		QuadTrust = 0 means the function change matches that of a quadratic*/
-		t = alpha*(dphi + dphi0);
-		if (fabs(t) <= Parm->qeps*MIN(Ck, ONE)) QuadTrust = ZERO;
-		else QuadTrust = fabs((2.0*(f - Com.f0) / t) - ONE);
+		t = alpha * (dphi + dphi0);
+		if (fabs(t) <= Parm->qeps * MIN(Ck, ONE)) QuadTrust = ZERO;
+		else QuadTrust = fabs((2.0 * (f - Com.f0) / t) - ONE);
 		if (QuadTrust <= Parm->qrule) IterQuad++;
 		else                           IterQuad = 0;
 
@@ -484,7 +483,7 @@ int cg_descent /*  return status of solution process:
 		IterRestart++;
 		if (!Com.AWolfe)
 		{
-			if (fabs(f - Com.f0) < Parm->AWolfeFac*Ck)
+			if (fabs(f - Com.f0) < Parm->AWolfeFac * Ck)
 			{
 				Com.AWolfe = TRUE;
 				if (Com.Wolfe) Restart = TRUE;
@@ -499,7 +498,7 @@ int cg_descent /*  return status of solution process:
 				{
 					StartSkip = iter;
 					UseMemory = FALSE;
-					if (SubSkip == 0) SubSkip = mem*Parm->SubSkip;
+					if (SubSkip == 0) SubSkip = mem * Parm->SubSkip;
 					else                SubSkip *= 2;
 					if (PrintLevel >= 1)
 					{
@@ -593,12 +592,12 @@ int cg_descent /*  return status of solution process:
 						memk = 1;   /* dimension of current subspace */
 
 						t = sqrt(dnorm2);
-						zeta = alpha*t;
+						zeta = alpha * t;
 						Rk[0] = zeta;
 						cg_scale(SkF, d, alpha, n);
 						Yk[0] = (dphi - dphi0) / t;
 						gsub[0] = dphi / t;
-						SkYk[0] = alpha*(dphi - dphi0);
+						SkYk[0] = alpha * (dphi - dphi0);
 						FirstFull = FALSE;
 						if (IterRestart > 1)
 						{
@@ -609,7 +608,7 @@ int cg_descent /*  return status of solution process:
 							/* Also store dot product of g with the first
 							direction vector -- this saves a later dot
 							product when we fix the first column of Yk */
-							stgkeep = dphi0*alpha;
+							stgkeep = dphi0 * alpha;
 							d0isg = FALSE;
 						}
 						else d0isg = TRUE;
@@ -618,12 +617,12 @@ int cg_descent /*  return status of solution process:
 					{
 						mlast = memk; /* starting pointer in the memory */
 						memk++;       /* total number of Rk in the memory */
-						mpp = mlast*n;
-						spp = mlast*mem;
+						mpp = mlast * n;
+						spp = mlast * mem;
 						cg_scale(SkF + mpp, d, alpha, n);
 
 						/* check if the alphas are far from 1 */
-						if ((fabs(alpha - 5.05)>4.95) || (fabs(alphaold - 5.05)>4.95))
+						if ((fabs(alpha - 5.05) > 4.95) || (fabs(alphaold - 5.05) > 4.95))
 						{
 							/* multiply basis vectors by new direction vector */
 							cg_matvec(Rk + spp, SkF, SkF + mpp, mlast, n, 0);
@@ -636,17 +635,17 @@ int cg_descent /*  return status of solution process:
 						else /* alphas are close to 1 */
 						{
 							t1 = -alpha;
-							t2 = beta*alpha / alphaold;
+							t2 = beta * alpha / alphaold;
 							for (j = 0; j < mlast; j++)
 							{
-								Rk[spp + j] = t1*gsub[j] + t2*Rk[spp - mem + j];
+								Rk[spp + j] = t1 * gsub[j] + t2 * Rk[spp - mem + j];
 							}
 						}
-						t = alpha*alpha*dnorm2;
+						t = alpha * alpha * dnorm2;
 						t1 = cg_dot0(Rk + spp, Rk + spp, mlast);
 						if (t <= t1)
 						{
-							zeta = t*1.e-12;
+							zeta = t * 1.e-12;
 							NegDiag = TRUE;
 						}
 						else zeta = sqrt(t - t1);
@@ -659,13 +658,13 @@ int cg_descent /*  return status of solution process:
 						/* multiply basis vectors by new gradient */
 						cg_matvec(wsub, SkF, gtemp, mlast, n, 0);
 						/* exploit dphi for last multiply */
-						wsub[mlast] = alpha*dphi;
+						wsub[mlast] = alpha * dphi;
 						/* solve for new gsub */
 						cg_trisolve(wsub, Rk, mem, memk, 0);
 						/* subtract old gsub from new gsub = column of Yk */
 						cg_Yk(Yk + spp, gsub, wsub, NULL, memk);
 
-						SkYk[mlast] = alpha*(dphi - dphi0);
+						SkYk[mlast] = alpha * (dphi - dphi0);
 					}
 				}
 				else  /* memk = mem */
@@ -675,7 +674,7 @@ int cg_descent /*  return status of solution process:
 					cg_scale(stemp, d, alpha, n);
 					/* compute projection of s_k = alpha_k d_k into subspace
 					check if the alphas are far from 1 */
-					if ((fabs(alpha - 5.05)>4.95) || (fabs(alphaold - 5.05)>4.95))
+					if ((fabs(alpha - 5.05) > 4.95) || (fabs(alphaold - 5.05) > 4.95))
 					{
 						mp = SkFstart;
 						j = mem - mp;
@@ -692,20 +691,20 @@ int cg_descent /*  return status of solution process:
 					else /* alphas close to 1 */
 					{
 						t1 = -alpha;
-						t2 = beta*alpha / alphaold;
+						t2 = beta * alpha / alphaold;
 						for (j = 0; j < mem; j++)
 						{
-							Re[j] = t1*gsub[j] + t2*Re[j - mem];
+							Re[j] = t1 * gsub[j] + t2 * Re[j - mem];
 						}
 					}
 
 					/* t = 2-norm squared of s_k */
-					t = alpha*alpha*dnorm2;
+					t = alpha * alpha * dnorm2;
 					/* t1 = 2-norm squared of projection */
 					t1 = cg_dot0(Re, Re, mem);
 					if (t <= t1)
 					{
-						zeta = t*1.e-12;
+						zeta = t * 1.e-12;
 						NegDiag = TRUE;
 					}
 					else zeta = sqrt(t - t1);
@@ -732,36 +731,36 @@ int cg_descent /*  return status of solution process:
 
 					/* solve Rk'y = wsub */
 					cg_trisolve(wsub, Rk, mem, mem, 0);
-					wsub[mem] = (alpha*dphi - cg_dot0(wsub, Re, mem)) / zeta;
+					wsub[mem] = (alpha * dphi - cg_dot0(wsub, Re, mem)) / zeta;
 
 					/* add new column to Yk, store new gsub */
 					cg_Yk(Yk + spp, gsub, wsub, NULL, mem + 1);
 
 					/* store sk (stemp) at SkF+SkFstart */
-					cg_copy(SkF + SkFstart*n, stemp, n);
+					cg_copy(SkF + SkFstart * n, stemp, n);
 					SkFstart++;
 					if (SkFstart == mem) SkFstart = 0;
 
 					mp = SkFstart;
 					for (k = 0; k < mem; k++)
 					{
-						spp = (k + 1)*mem + k;
+						spp = (k + 1) * mem + k;
 						t1 = Rk[spp];
 						t2 = Rk[spp + 1];
-						t = sqrt(t1*t1 + t2*t2);
+						t = sqrt(t1 * t1 + t2 * t2);
 						t1 = t1 / t;
 						t2 = t2 / t;
 
 						/* update Rk */
-						Rk[k*mem + k] = t;
+						Rk[k * mem + k] = t;
 						for (j = (k + 2); j <= mem; j++)
 						{
 							spp1 = spp;
-							spp = j*mem + k;
+							spp = j * mem + k;
 							t3 = Rk[spp];
 							t4 = Rk[spp + 1];
-							Rk[spp1] = t1*t3 + t2*t4;
-							Rk[spp + 1] = t1*t4 - t2*t3;
+							Rk[spp1] = t1 * t3 + t2 * t4;
+							Rk[spp + 1] = t1 * t4 - t2 * t3;
 						}
 						/* update Yk */
 						if (k < 2) /* mem should be greater than 2 */
@@ -771,18 +770,18 @@ int cg_descent /*  return status of solution process:
 							for (j = 1; j < mem; j++)
 							{
 								spp1 = spp;
-								spp = j*mem + k;
+								spp = j * mem + k;
 								t3 = Yk[spp];
 								t4 = Yk[spp + 1];
-								Yk[spp1] = t1*t3 + t2*t4;
-								Yk[spp + 1] = t1*t4 - t2*t3;
+								Yk[spp1] = t1 * t3 + t2 * t4;
+								Yk[spp + 1] = t1 * t4 - t2 * t3;
 							}
 							spp1 = spp;
-							spp = mem*mem + 1 + k;
+							spp = mem * mem + 1 + k;
 							t3 = Yk[spp];
 							t4 = Yk[spp + 1];
-							Yk[spp1] = t1*t3 + t2*t4;
-							Yk[spp + 1] = t1*t4 - t2*t3;
+							Yk[spp1] = t1 * t3 + t2 * t4;
+							Yk[spp + 1] = t1 * t4 - t2 * t3;
 						}
 						else if ((k == 2) && (2 < mem - 1))
 						{
@@ -792,27 +791,27 @@ int cg_descent /*  return status of solution process:
 							vector has been dropped */
 							j = 1;
 							spp1 = spp;
-							spp = j*mem + k;
+							spp = j * mem + k;
 							/* single nonzero percolates down the column */
 							t3 = Yk[spp];  /* t4 = 0. */
-							Yk[spp1] = t1*t3;
-							Yk[spp + 1] = -t2*t3;
+							Yk[spp1] = t1 * t3;
+							Yk[spp + 1] = -t2 * t3;
 							/* process rows in Hessenberg part of matrix */
 							for (j = 2; j < mem; j++)
 							{
 								spp1 = spp;
-								spp = j*mem + k;
+								spp = j * mem + k;
 								t3 = Yk[spp];
 								t4 = Yk[spp + 1];
-								Yk[spp1] = t1*t3 + t2*t4;
-								Yk[spp + 1] = t1*t4 - t2*t3;
+								Yk[spp1] = t1 * t3 + t2 * t4;
+								Yk[spp + 1] = t1 * t4 - t2 * t3;
 							}
 							spp1 = spp;
-							spp = mem*mem + 1 + k;
+							spp = mem * mem + 1 + k;
 							t3 = Yk[spp];
 							t4 = Yk[spp + 1];
-							Yk[spp1] = t1*t3 + t2*t4;
-							Yk[spp + 1] = t1*t4 - t2*t3;
+							Yk[spp1] = t1 * t3 + t2 * t4;
+							Yk[spp + 1] = t1 * t4 - t2 * t3;
 						}
 						else if (k < (mem - 1))
 						{
@@ -821,35 +820,35 @@ int cg_descent /*  return status of solution process:
 							/* process first column */
 							j = 1;
 							spp1 = spp;
-							spp = j*mem + k;
+							spp = j * mem + k;
 							t3 = Yk[spp];  /* t4 = 0. */
-							Yk[spp1] = t1*t3;
-							Yk[spp + 1] = -t2*t3;
+							Yk[spp1] = t1 * t3;
+							Yk[spp + 1] = -t2 * t3;
 
 							/* process rows in Hessenberg part of matrix */
 							j = k - 1;
-							spp = (j - 1)*mem + k;
+							spp = (j - 1) * mem + k;
 							spp1 = spp;
-							spp = j*mem + k;
+							spp = j * mem + k;
 							t3 = Yk[spp];
-							Yk[spp1] = t1*t3; /* t4 = 0. */
+							Yk[spp1] = t1 * t3; /* t4 = 0. */
 											  /* Yk [spp+1] = -t2*t3 ;*/
 											  /* Theoretically this element is zero */
 							for (j = k; j < mem; j++)
 							{
 								spp1 = spp;
-								spp = j*mem + k;
+								spp = j * mem + k;
 								t3 = Yk[spp];
 								t4 = Yk[spp + 1];
-								Yk[spp1] = t1*t3 + t2*t4;
-								Yk[spp + 1] = t1*t4 - t2*t3;
+								Yk[spp1] = t1 * t3 + t2 * t4;
+								Yk[spp + 1] = t1 * t4 - t2 * t3;
 							}
 							spp1 = spp;
-							spp = mem*mem + 1 + k;
+							spp = mem * mem + 1 + k;
 							t3 = Yk[spp];
 							t4 = Yk[spp + 1];
-							Yk[spp1] = t1*t3 + t2*t4;
-							Yk[spp + 1] = t1*t4 - t2*t3;
+							Yk[spp1] = t1 * t3 + t2 * t4;
+							Yk[spp + 1] = t1 * t4 - t2 * t3;
 						}
 						else /* k = mem-1 */
 						{
@@ -858,50 +857,50 @@ int cg_descent /*  return status of solution process:
 							/* process first column */
 							j = 1;
 							spp1 = spp;
-							spp = j*mem + k;
+							spp = j * mem + k;
 							t3 = Yk[spp]; /* t4 = 0. */
-							Yk[spp1] = t1*t3;
+							Yk[spp1] = t1 * t3;
 
 							/* process rows in Hessenberg part of matrix */
 							j = k - 1;
-							spp = (j - 1)*mem + k;
+							spp = (j - 1) * mem + k;
 							spp1 = spp;
-							spp = j*mem + k;
+							spp = j * mem + k;
 							t3 = Yk[spp]; /* t4 = 0. */
-							Yk[spp1] = t1*t3;
+							Yk[spp1] = t1 * t3;
 
 							j = k;
 							spp1 = spp;
-							spp = j*mem + k; /* j=mem-1 */
+							spp = j * mem + k; /* j=mem-1 */
 							t3 = Yk[spp];
 							t4 = Yk[spp + 1];
-							Yk[spp1] = t1*t3 + t2*t4;
+							Yk[spp1] = t1 * t3 + t2 * t4;
 
 							spp1 = spp;
-							spp = mem*mem + 1 + k; /* j=mem */
+							spp = mem * mem + 1 + k; /* j=mem */
 							t3 = Yk[spp];
 							t4 = Yk[spp + 1];
-							Yk[spp1] = t1*t3 + t2*t4;
+							Yk[spp1] = t1 * t3 + t2 * t4;
 						}
 						/* update g in subspace */
 						if (k < (mem - 1))
 						{
 							t3 = gsub[k];
 							t4 = gsub[k + 1];
-							gsub[k] = t1*t3 + t2*t4;
-							gsub[k + 1] = t1*t4 - t2*t3;
+							gsub[k] = t1 * t3 + t2 * t4;
+							gsub[k + 1] = t1 * t4 - t2 * t3;
 						}
 						else /* k = mem-1 */
 						{
 							t3 = gsub[k];
 							t4 = gsub[k + 1];
-							gsub[k] = t1*t3 + t2*t4;
+							gsub[k] = t1 * t3 + t2 * t4;
 						}
 					}
 
 					/* update SkYk */
 					for (k = 0; k < mlast; k++) SkYk[k] = SkYk[k + 1];
-					SkYk[mlast] = alpha*(dphi - dphi0);
+					SkYk[mlast] = alpha * (dphi - dphi0);
 				}
 
 				/* calculate t = ||gsub|| / ||gtemp||  */
@@ -950,13 +949,13 @@ int cg_descent /*  return status of solution process:
 					IterSubRestart = 0;
 					IterSubStart = IterSub;
 					nsub = memk; /* dimension of subspace */
-					nrestartsub = (int)(((double)nsub)*Parm->restart_fac);
+					nrestartsub = (int)(((double)nsub) * Parm->restart_fac);
 					mp_begin = mlast;
 					memk_begin = nsub;
 					SkFlast = (SkFstart + nsub - 1) % mem;
 					cg_copy0(gsubtemp, gsub, nsub);
 					/* Rk contains the sk for subspace, initialize Sk = Rk */
-					cg_copy(Sk, Rk, (int)mem*nsub);
+					cg_copy(Sk, Rk, (int)mem * nsub);
 				}
 				else
 				{
@@ -1000,10 +999,10 @@ int cg_descent /*  return status of solution process:
 			else
 			{
 				mlast = (mlast + 1) % mem;
-				spp = mlast*n;
+				spp = mlast * n;
 				cg_step(Sk + spp, xtemp, x, -ONE, n);
 				cg_step(Yk + spp, gtemp, g, -ONE, n);
-				SkYk[mlast] = alpha*(dphi - dphi0);
+				SkYk[mlast] = alpha * (dphi - dphi0);
 				if (memk < mem) memk++;
 
 				/* copy xtemp to x */
@@ -1016,7 +1015,7 @@ int cg_descent /*  return status of solution process:
 				mp = mlast;  /* memk is the number of vectors in the memory */
 				for (j = 0; j < memk; j++)
 				{
-					mpp = mp*n;
+					mpp = mp * n;
 					t = cg_dot(Sk + mpp, gtemp, n) / SkYk[mp];
 					tau[mp] = t;
 					cg_daxpy(gtemp, Yk + mpp, -t, n);
@@ -1024,7 +1023,7 @@ int cg_descent /*  return status of solution process:
 					if (mp < 0) mp = mem - 1;
 				}
 				/* scale = (alpha*dnorm2)/(dphi-dphi0) ; */
-				t = cg_dot(Yk + mlast*n, Yk + mlast*n, n);
+				t = cg_dot(Yk + mlast * n, Yk + mlast * n, n);
 				if (t > ZERO)
 				{
 					scale = SkYk[mlast] / t;
@@ -1036,7 +1035,7 @@ int cg_descent /*  return status of solution process:
 				{
 					mp += 1;
 					if (mp == mem) mp = 0;
-					mpp = mp*n;
+					mpp = mp * n;
 					t = cg_dot(Yk + mpp, gtemp, n) / SkYk[mp];
 					cg_daxpy(gtemp, Sk + mpp, tau[mp] - t, n);
 				}
@@ -1099,12 +1098,12 @@ int cg_descent /*  return status of solution process:
 				{
 					/* add new column to Yk memory,
 					calculate yty, Sk, Yk and SkYk */
-					spp = mlast_sub*mem;
+					spp = mlast_sub * mem;
 					cg_scale0(Sk + spp, dsub, alpha, nsub);
 					/* yty = (gsubtemp-gsub)'(gsubtemp-gsub),
 					set gsub = gsubtemp */
 					cg_Yk(Yk + spp, gsub, gsubtemp, &yty, nsub);
-					SkYk[mlast_sub] = alpha*(dphi - dphi0);
+					SkYk[mlast_sub] = alpha * (dphi - dphi0);
 					if (yty > ZERO)
 					{
 						scale = SkYk[mlast_sub] / yty;
@@ -1112,7 +1111,7 @@ int cg_descent /*  return status of solution process:
 				}
 				else
 				{
-					yty = cg_dot0(Yk + mlast_sub*mem, Yk + mlast_sub*mem, nsub);
+					yty = cg_dot0(Yk + mlast_sub * mem, Yk + mlast_sub * mem, nsub);
 					if (yty > ZERO)
 					{
 						scale = SkYk[mlast_sub] / yty;
@@ -1133,7 +1132,7 @@ int cg_descent /*  return status of solution process:
 				/* process dense columns */
 				for (j = 0; j < l1; j++)
 				{
-					mpp = mp*mem;
+					mpp = mp * mem;
 					t = cg_dot0(Sk + mpp, gsubtemp, nsub) / SkYk[mp];
 					tau[mp] = t;
 					/* update gsubtemp -= t*Yk+mpp */
@@ -1145,7 +1144,7 @@ int cg_descent /*  return status of solution process:
 				/* process columns from triangular (Hessenberg) matrix */
 				for (j = 1; j < l2; j++)
 				{
-					mpp = mp*mem;
+					mpp = mp * mem;
 					t = cg_dot0(Sk + mpp, gsubtemp, mp + 1) / SkYk[mp];
 					tau[mp] = t;
 					/* update gsubtemp -= t*Yk+mpp */
@@ -1167,7 +1166,7 @@ int cg_descent /*  return status of solution process:
 				{
 					mp++;
 					if (mp == mem) mp = 0;
-					mpp = mp*mem;
+					mpp = mp * mem;
 					if (mp == 0 && DenseCol1)
 					{
 						t = cg_dot0(Yk + mpp, gsubtemp, nsub) / SkYk[mp];
@@ -1185,7 +1184,7 @@ int cg_descent /*  return status of solution process:
 				{
 					mp++;
 					if (mp == mem) mp = 0;
-					mpp = mp*mem;
+					mpp = mp * mem;
 					t = cg_dot0(Yk + mpp, gsubtemp, nsub) / SkYk[mp];
 					/* update gsubtemp += (tau[mp]-t)*Sk+mpp */
 					cg_daxpy0(gsubtemp, Sk + mpp, tau[mp] - t, nsub);
@@ -1254,9 +1253,9 @@ int cg_descent /*  return status of solution process:
 				}
 
 				dkyk = dphi - dphi0;
-				if (Parm->AdaptiveBeta) t = 2. - ONE / (0.1*QuadTrust + ONE);
+				if (Parm->AdaptiveBeta) t = 2. - ONE / (0.1 * QuadTrust + ONE);
 				else                      t = Parm->theta;
-				beta = (ykgk - t*dphi*ykyk / dkyk) / dkyk;
+				beta = (ykgk - t * dphi * ykyk / dkyk) / dkyk;
 
 				/* faster: initialize dnorm2 = gnorm2 at start, then
 				dnorm2 = gnorm2 + beta**2*dnorm2 - 2.*beta*dphi
@@ -1265,7 +1264,7 @@ int cg_descent /*  return status of solution process:
 				dpi = g_{k+1}' d_k */
 
 				/* lower bound for beta is BetaLower*d_k'g_k/ ||d_k||^2 */
-				beta = MAX(beta, Parm->BetaLower*dphi0 / dnorm2);
+				beta = MAX(beta, Parm->BetaLower * dphi0 / dnorm2);
 
 				/* update search direction d = -g + beta*dold */
 				if (UseMemory)
@@ -1281,12 +1280,12 @@ int cg_descent /*  return status of solution process:
 					dnorm2 = cg_update_d(d, g, beta, &gnorm2, n);
 				}
 
-				dphi0 = -gnorm2 + beta*dphi;
+				dphi0 = -gnorm2 + beta * dphi;
 				if (Parm->debug) /* Check that dphi0 = d'g */
 				{
 					t = ZERO;
 					for (i = 0; i < n; i++)  t = t + d[i] * g[i];
-					if (fabs(t - dphi0) > Parm->debugtol*fabs(dphi0))
+					if (fabs(t - dphi0) > Parm->debugtol * fabs(dphi0))
 					{
 						printf("Warning, dphi0 != d'g!\n");
 						printf("dphi0:%13.6e, d'g:%13.6e\n", dphi0, t);
@@ -1310,12 +1309,12 @@ int cg_descent /*  return status of solution process:
 
 				mlast_sub = (mp_begin + IterSubRestart) % mem;
 				/* save Sk */
-				spp = mlast_sub*mem;
+				spp = mlast_sub * mem;
 				cg_scale0(Sk + spp, dsub, alpha, nsub);
 				/* calculate yty, save Yk, set gsub = gsubtemp */
 				cg_Yk(Yk + spp, gsub, gsubtemp, &yty, nsub);
 				ytg = cg_dot0(Yk + spp, gsub, nsub);
-				t = alpha*(dphi - dphi0);
+				t = alpha * (dphi - dphi0);
 				SkYk[mlast_sub] = t;
 
 				/* scale = t/ykyk ; */
@@ -1338,7 +1337,7 @@ int cg_descent /*  return status of solution process:
 				/* process dense columns */
 				for (j = 0; j < l1; j++)
 				{
-					mpp = mp*mem;
+					mpp = mp * mem;
 					t = cg_dot0(Sk + mpp, gsubtemp, nsub) / SkYk[mp];
 					tau[mp] = t;
 					/* update gsubtemp -= t*Yk+mpp */
@@ -1350,7 +1349,7 @@ int cg_descent /*  return status of solution process:
 				/* process columns from triangular (Hessenberg) matrix */
 				for (j = 1; j < l2; j++)
 				{
-					mpp = mp*mem;
+					mpp = mp * mem;
 					t = cg_dot0(Sk + mpp, gsubtemp, mp + 1) / SkYk[mp];
 					tau[mp] = t;
 					/* update gsubtemp -= t*Yk+mpp */
@@ -1372,7 +1371,7 @@ int cg_descent /*  return status of solution process:
 				{
 					mp++;
 					if (mp == mem) mp = 0;
-					mpp = mp*mem;
+					mpp = mp * mem;
 					if (mp == 0 && DenseCol1)
 					{
 						t = cg_dot0(Yk + mpp, gsubtemp, nsub) / SkYk[mp];
@@ -1390,7 +1389,7 @@ int cg_descent /*  return status of solution process:
 				{
 					mp++;
 					if (mp == mem) mp = 0;
-					mpp = mp*mem;
+					mpp = mp * mem;
 					t = cg_dot0(Yk + mpp, gsubtemp, nsub) / SkYk[mp];
 					/* update gsubtemp += (tau[mp]-t)*Sk+mpp */
 					cg_daxpy0(gsubtemp, Sk + mpp, tau[mp] - t, nsub);
@@ -1398,20 +1397,19 @@ int cg_descent /*  return status of solution process:
 
 				  /* compute beta */
 				dkyk = dphi - dphi0;
-				if (Parm->AdaptiveBeta) t = 2. - ONE / (0.1*QuadTrust + ONE);
+				if (Parm->AdaptiveBeta) t = 2. - ONE / (0.1 * QuadTrust + ONE);
 				else                      t = Parm->theta;
 				t1 = MAX(ykyk - yty, ZERO); /* Theoretically t1 = ykyk-yty */
 				if (ykyk > ZERO)
 				{
-					scale = (alpha*dkyk) / ykyk; /* = sigma */
+					scale = (alpha * dkyk) / ykyk; /* = sigma */
 				}
-				beta = scale*((ykgk - ytg) - t*dphi*t1 / dkyk) / dkyk;
+				beta = scale * ((ykgk - ytg) - t * dphi * t1 / dkyk) / dkyk;
 				/* beta = MAX (beta, Parm->BetaLower*dphi0/dnorm2) ; */
-				beta = MAX(beta, Parm->BetaLower*(dphi0*alpha) / dkyk);
+				beta = MAX(beta, Parm->BetaLower * (dphi0 * alpha) / dkyk);
 
 				/* compute search direction
 				d = -Zk (H - sigma)ghat - sigma g + beta d
-
 				Note: d currently contains last 2 terms so only need
 				to add the Zk term. Above gsubtemp = H ghat */
 
@@ -1439,7 +1437,7 @@ int cg_descent /*  return status of solution process:
 
 				gHg = cg_dot0(gsubtemp, gsub, nsub);
 				t1 = MAX(gnorm2 - gsubnorm2, ZERO);
-				dphi0 = -gHg - scale*t1 + beta*dphi;
+				dphi0 = -gHg - scale * t1 + beta * dphi;
 				/* dphi0 = cg_dot (d, g, n) could be inaccurate */
 				dnorm2 = cg_dot(d, d, n);
 			}  /* end of preconditioned step */
@@ -1467,7 +1465,7 @@ int cg_descent /*  return status of solution process:
 
 		if (Parm->debug)
 		{
-			if (f > Com.f0 + Parm->debugtol*Ck)
+			if (f > Com.f0 + Parm->debugtol * Ck)
 			{
 				status = 8;
 				goto Exit;
@@ -1626,13 +1624,13 @@ PRIVATE int cg_Wolfe
 	double   alpha, /* stepsize */
 	double       f, /* function value associated with stepsize alpha */
 	double    dphi, /* derivative value associated with stepsize alpha */
-	cg_com    *Com  /* cg com */
+	cg_com* Com  /* cg com */
 )
 {
 	if (dphi >= Com->wolfe_lo)
 	{
 		/* test original Wolfe conditions */
-		if (f - Com->f0 <= alpha*Com->wolfe_hi)
+		if (f - Com->f0 <= alpha * Com->wolfe_hi)
 		{
 			if (Com->Parm->PrintLevel >= 2)
 			{
@@ -1681,7 +1679,7 @@ Check for convergence
 PRIVATE int cg_tol
 (
 	double     gnorm, /* gradient sup-norm */
-	cg_com    *Com    /* cg com */
+	cg_com* Com    /* cg com */
 )
 {
 	/* StopRule = T => |grad|_infty <=max (tol, |grad|_infty*StopFact)
@@ -1693,7 +1691,9 @@ PRIVATE int cg_tol
 	}
 	else if ( gnorm <= Com->tol*(ONE + fabs (Com->f)) ) return (1) ;
 	*/
-	if (gnorm <= 1.e-6) return (1);									//Modified!!!
+	if (gnorm <= 1e+0) return (1);									//Modified  for ANN
+//	if (gnorm <= 1e-6) return (1);									//Modified  for UCONs
+//	if (Com->Parm->stop()) return 1;					//For Symmetric Matrix Game
 	return (0);
 }
 
@@ -1711,14 +1711,14 @@ Return:
 ========================================================================= */
 PRIVATE int cg_line
 (
-	cg_com   *Com /* cg com structure */
+	cg_com* Com /* cg com structure */
 )
 {
 	int AWolfe, iter, ngrow, PrintLevel, qb, qb0, status, toggle;
 	double alpha, a, a1, a2, b, bmin, B, da, db, d0, d1, d2, dB, df, f, fa, fb,
 		fB, a0, b0, da0, db0, fa0, fb0, width, rho;
-	char *s1, *s2, *fmt1 = NULL, *fmt2 = NULL;
-	cg_parameter *Parm;
+	char* s1, * s2, * fmt1 = NULL, * fmt2 = NULL;
+	cg_parameter* Parm;
 
 	AWolfe = Com->AWolfe;
 	Parm = Com->Parm;
@@ -1740,14 +1740,14 @@ PRIVATE int cg_line
 	/* evaluate function or gradient at Com->alpha (starting guess) */
 	if (Com->QuadOK)
 	{
-		status = cg_evaluate("fg", "y", Com);
+		status = cg_evaluate((char*)"fg", (char*)"y", Com);
 		fb = Com->f;
-		if (!AWolfe) fb -= Com->alpha*Com->wolfe_hi;
+		if (!AWolfe) fb -= Com->alpha * Com->wolfe_hi;
 		qb = TRUE; /* function value at b known */
 	}
 	else
 	{
-		status = cg_evaluate("g", "y", Com);
+		status = cg_evaluate((char*)"g", (char*)"y", Com);
 		qb = FALSE;
 	}
 	if (status) return (status); /* function is undefined */
@@ -1769,12 +1769,12 @@ PRIVATE int cg_line
 	fa = Com->f0;
 	if (PrintLevel >= 1)
 	{
-		fmt1 = "%9s %2s a: %13.6e b: %13.6e fa: %13.6e fb: %13.6e "
+		fmt1 = (char*)"%9s %2s a: %13.6e b: %13.6e fa: %13.6e fb: %13.6e "
 			"da: %13.6e db: %13.6e\n";
-		fmt2 = "%9s %2s a: %13.6e b: %13.6e fa: %13.6e fb:  x.xxxxxxxxxx "
+		fmt2 = (char*)"%9s %2s a: %13.6e b: %13.6e fa: %13.6e fb:  x.xxxxxxxxxx "
 			"da: %13.6e db: %13.6e\n";
-		if (Com->QuadOK) s2 = "OK";
-		else               s2 = "";
+		if (Com->QuadOK) s2 = (char*)"OK";
+		else               s2 = (char*)"";
 		if (qb) printf(fmt1, "start    ", s2, a, b, fa, fb, da, db);
 		else      printf(fmt2, "start    ", s2, a, b, fa, da, db);
 	}
@@ -1796,10 +1796,10 @@ PRIVATE int cg_line
 	{
 		if (!qb)
 		{
-			status = cg_evaluate("f", "n", Com);
+			status = cg_evaluate((char*)"f", (char*)"n", Com);
 			if (status) return (status);
 			if (AWolfe) fb = Com->f;
-			else          fb = Com->f - b*Com->wolfe_hi;
+			else          fb = Com->f - b * Com->wolfe_hi;
 			qb = TRUE;
 		}
 		if (fb > Com->fpert) /* contract interval [a, b] */
@@ -1823,30 +1823,30 @@ PRIVATE int cg_line
 		a2 = a1;
 		a1 = a;
 
-		bmin = rho*b;
+		bmin = rho * b;
 		if ((ngrow == 2) || (ngrow == 3) || (ngrow == 6))
 		{
 			if (d1 > d2)
 			{
 				if (ngrow == 2)
 				{
-					b = a1 - (a1 - a2)*(d1 / (d1 - d2));
+					b = a1 - (a1 - a2) * (d1 / (d1 - d2));
 				}
 				else
 				{
 					if ((d1 - d2) / (a1 - a2) >= (d2 - d0) / a2)
 					{
 						/* convex derivative, secant overestimates minimizer */
-						b = a1 - (a1 - a2)*(d1 / (d1 - d2));
+						b = a1 - (a1 - a2) * (d1 / (d1 - d2));
 					}
 					else
 					{
 						/* concave derivative, secant underestimates minimizer*/
-						b = a1 - Parm->SecantAmp*(a1 - a2)*(d1 / (d1 - d2));
+						b = a1 - Parm->SecantAmp * (a1 - a2) * (d1 / (d1 - d2));
 					}
 				}
 				/* safeguard growth */
-				b = MIN(b, Parm->ExpandSafe*a1);
+				b = MIN(b, Parm->ExpandSafe * a1);
 			}
 			else rho *= Parm->RhoGrow;
 		}
@@ -1854,7 +1854,7 @@ PRIVATE int cg_line
 		b = MAX(bmin, b);
 		Com->alphaold = Com->alpha;
 		Com->alpha = b;
-		status = cg_evaluate("g", "p", Com);
+		status = cg_evaluate((char*)"g", (char*)"p", Com);
 		if (status) return (status);
 		b = Com->alpha;
 		qb = FALSE;
@@ -1862,8 +1862,8 @@ PRIVATE int cg_line
 		else          db = Com->df - Com->wolfe_hi;
 		if (PrintLevel >= 2)
 		{
-			if (Com->QuadOK) s2 = "OK";
-			else               s2 = "";
+			if (Com->QuadOK) s2 = (char*)"OK";
+			else               s2 = (char*)"";
 			printf(fmt2, "expand   ", s2, a, b, fa, da, db);
 		}
 	}
@@ -1881,31 +1881,31 @@ Line:
 			Com->QuadOK = TRUE;
 			if (Com->UseCubic && qb)
 			{
-				s1 = "cubic    ";
+				s1 = (char*)"cubic    ";
 				alpha = cg_cubic(a, fa, da, b, fb, db);
 				if (alpha < ZERO) /* use secant method */
 				{
-					s1 = "secant   ";
-					if (-da < db) alpha = a - (a - b)*(da / (da - db));
-					else if (da != db) alpha = b - (a - b)*(db / (da - db));
+					s1 = (char*)"secant   ";
+					if (-da < db) alpha = a - (a - b) * (da / (da - db));
+					else if (da != db) alpha = b - (a - b) * (db / (da - db));
 					else                 alpha = -1.;
 				}
 			}
 			else
 			{
-				s1 = "secant   ";
-				if (-da < db) alpha = a - (a - b)*(da / (da - db));
-				else if (da != db) alpha = b - (a - b)*(db / (da - db));
+				s1 = (char*)"secant   ";
+				if (-da < db) alpha = a - (a - b) * (da / (da - db));
+				else if (da != db) alpha = b - (a - b) * (db / (da - db));
 				else                 alpha = -1.;
 			}
-			width = Parm->gamma*(b - a);
+			width = Parm->gamma * (b - a);
 		}
 		else if (toggle == 1) /* iteration based on smallest value*/
 		{
 			Com->QuadOK = TRUE;
 			if (Com->UseCubic)
 			{
-				s1 = "cubic    ";
+				s1 = (char*)"cubic    ";
 				if (Com->alpha == a) /* a is most recent iterate */
 				{
 					alpha = cg_cubic(a0, fa0, da0, a, fa, da);
@@ -1926,49 +1926,49 @@ Line:
 				/* if alpha still no good, use secant method */
 				if (alpha < ZERO)
 				{
-					s1 = "secant   ";
-					if (-da < db) alpha = a - (a - b)*(da / (da - db));
-					else if (da != db) alpha = b - (a - b)*(db / (da - db));
+					s1 = (char*)"secant   ";
+					if (-da < db) alpha = a - (a - b) * (da / (da - db));
+					else if (da != db) alpha = b - (a - b) * (db / (da - db));
 					else                 alpha = -1.;
 				}
 			}
 			else /* ( use secant ) */
 			{
-				s1 = "secant   ";
+				s1 = (char*)"secant   ";
 				if ((Com->alpha == a) && (da > da0)) /* use a0 if possible */
 				{
-					alpha = a - (a - a0)*(da / (da - da0));
+					alpha = a - (a - a0) * (da / (da - da0));
 				}
 				else if (db < db0)                   /* use b0 if possible */
 				{
-					alpha = b - (b - b0)*(db / (db - db0));
+					alpha = b - (b - b0) * (db / (db - db0));
 				}
 				else /* secant based on a and b */
 				{
-					if (-da < db) alpha = a - (a - b)*(da / (da - db));
-					else if (da != db) alpha = b - (a - b)*(db / (da - db));
+					if (-da < db) alpha = a - (a - b) * (da / (da - db));
+					else if (da != db) alpha = b - (a - b) * (db / (da - db));
 					else                 alpha = -1.;
 				}
 
 				if ((alpha <= a) || (alpha >= b))
 				{
-					if (-da < db) alpha = a - (a - b)*(da / (da - db));
-					else if (da != db) alpha = b - (a - b)*(db / (da - db));
+					if (-da < db) alpha = a - (a - b) * (da / (da - db));
+					else if (da != db) alpha = b - (a - b) * (db / (da - db));
 					else                 alpha = -1.;
 				}
 			}
 		}
 		else
 		{
-			alpha = .5*(a + b); /* use bisection if b-a decays slowly */
-			s1 = "bisection";
+			alpha = .5 * (a + b); /* use bisection if b-a decays slowly */
+			s1 = (char*)"bisection";
 			Com->QuadOK = FALSE;
 		}
 
 		if ((alpha <= a) || (alpha >= b))
 		{
-			alpha = .5*(a + b);
-			s1 = "bisection";
+			alpha = .5 * (a + b);
+			s1 = (char*)"bisection";
 			if ((alpha == a) || (alpha == b)) return (7);
 			Com->QuadOK = FALSE; /* bisection was used */
 		}
@@ -1991,7 +1991,7 @@ Line:
 		if (toggle > 2) toggle = 0;
 
 		Com->alpha = alpha;
-		status = cg_evaluate("fg", "n", Com);
+		status = cg_evaluate((char*)"fg", (char*)"n", Com);
 		if (status) return (status);
 		Com->alpha = alpha;
 		f = Com->f;
@@ -2010,7 +2010,7 @@ Line:
 		}
 		if (!AWolfe)
 		{
-			f -= alpha*Com->wolfe_hi;
+			f -= alpha * Com->wolfe_hi;
 			df -= Com->wolfe_hi;
 		}
 		if (df >= ZERO)
@@ -2051,8 +2051,8 @@ Line:
 		}
 		if (PrintLevel >= 2)
 		{
-			if (Com->QuadOK) s2 = "OK";
-			else               s2 = "";
+			if (Com->QuadOK) s2 = (char*)"OK";
+			else               s2 = (char*)"";
 			if (!qb) printf(fmt2, s1, s2, a, b, fa, da, db);
 			else       printf(fmt1, s1, s2, a, b, fa, fb, da, db);
 		}
@@ -2065,32 +2065,30 @@ Line:
 =========================================================================
 The input for this routine is an interval [a, b] with the property that
 fa <= fpert, da >= 0, db >= 0, and fb >= fpert. The returned status is
-
 11  function or derivative not defined
 0  if the Wolfe conditions are satisfied
 -1  if a new value for eps is generated with the property that for the
 corresponding fpert, we have fb <= fpert
 -2  if a subinterval, also denoted [a, b], is generated with the property
 that fa <= fpert, da >= 0, and db <= 0
-
 NOTE: The input arguments are unchanged when status = -1
 ========================================================================= */
 PRIVATE int cg_contract
 (
-	double    *A, /* left side of bracketing interval */
-	double   *fA, /* function value at a */
-	double   *dA, /* derivative at a */
-	double    *B, /* right side of bracketing interval */
-	double   *fB, /* function value at b */
-	double   *dB, /* derivative at b */
-	cg_com  *Com  /* cg com structure */
+	double* A, /* left side of bracketing interval */
+	double* fA, /* function value at a */
+	double* dA, /* derivative at a */
+	double* B, /* right side of bracketing interval */
+	double* fB, /* function value at b */
+	double* dB, /* derivative at b */
+	cg_com* Com  /* cg com structure */
 )
 {
 	int AWolfe, iter, PrintLevel, toggle, status;
 	double a, alpha, b, old, da, db, df, d1, dold, f, fa, fb, f1, fold,
 		t, width;
-	char *s;
-	cg_parameter *Parm;
+	char* s;
+	cg_parameter* Parm;
 
 	AWolfe = Com->AWolfe;
 	Parm = Com->Parm;
@@ -2112,7 +2110,7 @@ PRIVATE int cg_contract
 			/* cubic based on bracketing interval */
 			alpha = cg_cubic(a, fa, da, b, fb, db);
 			toggle = 0;
-			width = Parm->gamma*(b - a);
+			width = Parm->gamma * (b - a);
 			if (iter) Com->QuadOK = TRUE; /* at least 2 cubic iterations */
 		}
 		else if (toggle == 1)
@@ -2130,13 +2128,13 @@ PRIVATE int cg_contract
 		}
 		else
 		{
-			alpha = .5*(a + b); /* use bisection if b-a decays slowly */
+			alpha = .5 * (a + b); /* use bisection if b-a decays slowly */
 			Com->QuadOK = FALSE;
 		}
 
 		if ((alpha <= a) || (alpha >= b))
 		{
-			alpha = .5*(a + b);
+			alpha = .5 * (a + b);
 			Com->QuadOK = FALSE; /* bisection was used */
 		}
 
@@ -2144,7 +2142,7 @@ PRIVATE int cg_contract
 		if (toggle > 2) toggle = 0;
 
 		Com->alpha = alpha;
-		status = cg_evaluate("fg", "n", Com);
+		status = cg_evaluate((char*)"fg", (char*)"n", Com);
 		if (status) return (status);
 		f = Com->f;
 		df = Com->df;
@@ -2155,7 +2153,7 @@ PRIVATE int cg_contract
 		}
 		if (!AWolfe)
 		{
-			f -= alpha*Com->wolfe_hi;
+			f -= alpha * Com->wolfe_hi;
 			df -= Com->wolfe_hi;
 		}
 		if (df >= ZERO)
@@ -2186,8 +2184,8 @@ PRIVATE int cg_contract
 		}
 		if (PrintLevel >= 2)
 		{
-			if (Com->QuadOK) s = "OK";
-			else               s = "";
+			if (Com->QuadOK) s = (char*)"OK";
+			else               s = (char*)"";
 			printf("contract  %2s a: %13.6e b: %13.6e fa: %13.6e fb: "
 				"%13.6e da: %13.6e db: %13.6e\n", s, a, b, fa, fb, da, db);
 		}
@@ -2202,14 +2200,14 @@ PRIVATE int cg_contract
 	{
 		if (t != ZERO)
 		{
-			Com->eps = Parm->egrow*(f1 - t) / fabs(t);
-			Com->fpert = t + fabs(t)*Com->eps;
+			Com->eps = Parm->egrow * (f1 - t) / fabs(t);
+			Com->fpert = t + fabs(t) * Com->eps;
 		}
-		else Com->fpert = 2.*f1;
+		else Com->fpert = 2. * f1;
 	}
 	else
 	{
-		Com->eps = Parm->egrow*(f1 - t);
+		Com->eps = Parm->egrow * (f1 - t);
 		Com->fpert = t + Com->eps;
 	}
 	if (PrintLevel >= 1)
@@ -2231,15 +2229,15 @@ Return:
 
 PRIVATE int cg_evaluate
 (
-	char    *what, /* fg = evaluate func and grad, g = grad only,f = func only*/
-	char     *nan, /* y means check function/derivative values for nan */
-	cg_com   *Com
+	char* what, /* fg = evaluate func and grad, g = grad only,f = func only*/
+	char* nan, /* y means check function/derivative values for nan */
+	cg_com* Com
 )
 {
 	INT n;
 	int i;
-	double alpha, *d, *gtemp, *x, *xtemp;
-	cg_parameter *Parm;
+	double alpha, * d, * gtemp, * x, * xtemp;
+	cg_parameter* Parm;
 	Parm = Com->Parm;
 	n = Com->n;
 	x = Com->x;
@@ -2264,7 +2262,7 @@ PRIVATE int cg_evaluate
 				{
 					if (!strcmp(nan, "p")) /* contract from good alpha */
 					{
-						alpha = Com->alphaold + .8*(alpha - Com->alphaold);
+						alpha = Com->alphaold + .8 * (alpha - Com->alphaold);
 					}
 					else                      /* multiply by nan_decay */
 					{
@@ -2293,7 +2291,7 @@ PRIVATE int cg_evaluate
 				{
 					if (!strcmp(nan, "p")) /* contract from good alpha */
 					{
-						alpha = Com->alphaold + .8*(alpha - Com->alphaold);
+						alpha = Com->alphaold + .8 * (alpha - Com->alphaold);
 					}
 					else                      /* multiply by nan_decay */
 					{
@@ -2336,7 +2334,7 @@ PRIVATE int cg_evaluate
 				{
 					if (!strcmp(nan, "p")) /* contract from good alpha */
 					{
-						alpha = Com->alphaold + .8*(alpha - Com->alphaold);
+						alpha = Com->alphaold + .8 * (alpha - Com->alphaold);
 					}
 					else                      /* multiply by nan_decay */
 					{
@@ -2356,7 +2354,7 @@ PRIVATE int cg_evaluate
 					Com->nf++;
 					Com->ng++;
 					if ((Com->df == Com->df) && (Com->f == Com->f) &&
-						(Com->df <  INF) && (Com->f <  INF) &&
+						(Com->df < INF) && (Com->f < INF) &&
 						(Com->df > -INF) && (Com->f > -INF)) break;
 				}
 				if (i == Parm->ntries) return (11);
@@ -2445,12 +2443,12 @@ PRIVATE double cg_cubic
 	double c, d1, d2, delta, t, v, w;
 	delta = b - a;
 	if (delta == ZERO) return (a);
-	v = da + db - 3.*(fb - fa) / delta;
-	t = v*v - da*db;
+	v = da + db - 3. * (fb - fa) / delta;
+	t = v * v - da * db;
 	if (t < ZERO) /* complex roots, use secant method */
 	{
-		if (fabs(da) < fabs(db)) c = a - (a - b)*(da / (da - db));
-		else if (da != db)         c = b - (a - b)*(db / (da - db));
+		if (fabs(da) < fabs(db)) c = a - (a - b) * (da / (da - db));
+		else if (da != db)         c = b - (a - b) * (db / (da - db));
 		else                         c = -1;
 		return (c);
 	}
@@ -2460,8 +2458,8 @@ PRIVATE double cg_cubic
 	d1 = da + v - w;
 	d2 = db + v + w;
 	if ((d1 == ZERO) && (d2 == ZERO)) return (-1.);
-	if (fabs(d1) >= fabs(d2)) c = a + delta*da / d1;
-	else                          c = b - delta*db / d2;
+	if (fabs(d1) >= fabs(d2)) c = a + delta * da / d1;
+	else                          c = b - delta * db / d2;
 	return (c);
 }
 
@@ -2476,9 +2474,9 @@ Compute y = A*x or A'*x where A is a dense rectangular matrix
 ========================================================================= */
 PRIVATE void cg_matvec
 (
-	double *y, /* product vector */
-	double *A, /* dense matrix */
-	double *x, /* input vector */
+	double* y, /* product vector */
+	double* A, /* dense matrix */
+	double* x, /* input vector */
 	int     n, /* number of columns of A */
 	INT     m, /* number of rows of A */
 	int     w  /* T => y = A*x, F => y = A'*x */
@@ -2511,7 +2509,7 @@ PRIVATE void cg_matvec
 #ifndef NOBLAS
 	INT j, l;
 	BLAS_INT M, N;
-	if (w || (!w && (m*n < MATVEC_START)))
+	if (w || (!w && (m * n < MATVEC_START)))
 	{
 		l = 0;
 		if (w)
@@ -2552,8 +2550,8 @@ Solve Rx = y or R'x = y where R is a dense upper triangular matrix
 ========================================================================= */
 PRIVATE void cg_trisolve
 (
-	double *x, /* right side on input, solution on output */
-	double *R, /* dense matrix */
+	double* x, /* right side on input, solution on output */
+	double* R, /* dense matrix */
 	int     m, /* leading dimension of R */
 	int     n, /* dimension of triangular system */
 	int     w  /* T => Rx = y, F => R'x = y */
@@ -2562,7 +2560,7 @@ PRIVATE void cg_trisolve
 	int i, l;
 	if (w)
 	{
-		l = m*n;
+		l = m * n;
 		for (i = n; i > 0; )
 		{
 			i--;
@@ -2599,7 +2597,7 @@ Compute infinity norm of vector
 ========================================================================= */
 PRIVATE double cg_inf
 (
-	double *x, /* vector */
+	double* x, /* vector */
 	INT     n /* length of vector */
 )
 {
@@ -2657,8 +2655,8 @@ compute y = s*x where s is a scalar
 ========================================================================= */
 PRIVATE void cg_scale0
 (
-	double *y, /* output vector */
-	double *x, /* input vector */
+	double* y, /* output vector */
+	double* x, /* input vector */
 	double  s, /* scalar */
 	int     n /* length of vector */
 )
@@ -2684,18 +2682,18 @@ PRIVATE void cg_scale0
 	}
 	else
 	{
-		for (i = 0; i < n5; i++) y[i] = s*x[i];
+		for (i = 0; i < n5; i++) y[i] = s * x[i];
 		for (; i < n;)
 		{
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
 		}
 	}
@@ -2709,8 +2707,8 @@ compute y = s*x where s is a scalar
 ========================================================================= */
 PRIVATE void cg_scale
 (
-	double *y, /* output vector */
-	double *x, /* input vector */
+	double* y, /* output vector */
+	double* x, /* input vector */
 	double  s, /* scalar */
 	INT     n /* length of vector */
 )
@@ -2763,18 +2761,18 @@ PRIVATE void cg_scale
 	}
 	else
 	{
-		for (i = 0; i < n5; i++) y[i] = s*x[i];
+		for (i = 0; i < n5; i++) y[i] = s * x[i];
 		for (; i < n;)
 		{
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
-			y[i] = s*x[i];
+			y[i] = s * x[i];
 			i++;
 		}
 	}
@@ -2788,8 +2786,8 @@ Compute x = x + alpha d
 ========================================================================= */
 PRIVATE void cg_daxpy0
 (
-	double     *x, /* input and output vector */
-	double     *d, /* direction */
+	double* x, /* input and output vector */
+	double* d, /* direction */
 	double  alpha, /* stepsize */
 	int         n  /* length of the vectors */
 )
@@ -2810,14 +2808,14 @@ PRIVATE void cg_daxpy0
 	}
 	else
 	{
-		for (i = 0; i < n5; i++) x[i] += alpha*d[i];
+		for (i = 0; i < n5; i++) x[i] += alpha * d[i];
 		for (; i < n; i += 5)
 		{
-			x[i] += alpha*d[i];
-			x[i + 1] += alpha*d[i + 1];
-			x[i + 2] += alpha*d[i + 2];
-			x[i + 3] += alpha*d[i + 3];
-			x[i + 4] += alpha*d[i + 4];
+			x[i] += alpha * d[i];
+			x[i + 1] += alpha * d[i + 1];
+			x[i + 2] += alpha * d[i + 2];
+			x[i + 3] += alpha * d[i + 3];
+			x[i + 4] += alpha * d[i + 4];
 		}
 	}
 	return;
@@ -2830,8 +2828,8 @@ Compute x = x + alpha d
 ========================================================================= */
 PRIVATE void cg_daxpy
 (
-	double     *x, /* input and output vector */
-	double     *d, /* direction */
+	double* x, /* input and output vector */
+	double* d, /* direction */
 	double  alpha, /* stepsize */
 	INT         n  /* length of the vectors */
 )
@@ -2853,14 +2851,14 @@ PRIVATE void cg_daxpy
 	}
 	else
 	{
-		for (i = 0; i < n5; i++) x[i] += alpha*d[i];
+		for (i = 0; i < n5; i++) x[i] += alpha * d[i];
 		for (; i < n; i += 5)
 		{
-			x[i] += alpha*d[i];
-			x[i + 1] += alpha*d[i + 1];
-			x[i + 2] += alpha*d[i + 2];
-			x[i + 3] += alpha*d[i + 3];
-			x[i + 4] += alpha*d[i + 4];
+			x[i] += alpha * d[i];
+			x[i + 1] += alpha * d[i + 1];
+			x[i + 2] += alpha * d[i + 2];
+			x[i + 3] += alpha * d[i + 3];
+			x[i + 4] += alpha * d[i + 4];
 		}
 	}
 #endif
@@ -2885,14 +2883,14 @@ PRIVATE void cg_daxpy
 		}
 		else
 		{
-			for (i = 0; i < n5; i++) x[i] += alpha*d[i];
+			for (i = 0; i < n5; i++) x[i] += alpha * d[i];
 			for (; i < n; i += 5)
 			{
-				x[i] += alpha*d[i];
-				x[i + 1] += alpha*d[i + 1];
-				x[i + 2] += alpha*d[i + 2];
-				x[i + 3] += alpha*d[i + 3];
-				x[i + 4] += alpha*d[i + 4];
+				x[i] += alpha * d[i];
+				x[i + 1] += alpha * d[i + 1];
+				x[i + 2] += alpha * d[i + 2];
+				x[i + 3] += alpha * d[i + 3];
+				x[i + 4] += alpha * d[i + 4];
 			}
 		}
 	}
@@ -2913,8 +2911,8 @@ Compute dot product of x and y, vectors of length n
 ========================================================================= */
 PRIVATE double cg_dot0
 (
-	double *x, /* first vector */
-	double *y, /* second vector */
+	double* x, /* first vector */
+	double* y, /* second vector */
 	int     n /* length of vectors */
 )
 {
@@ -2939,8 +2937,8 @@ Compute dot product of x and y, vectors of length n
 ========================================================================= */
 PRIVATE double cg_dot
 (
-	double *x, /* first vector */
-	double *y, /* second vector */
+	double* x, /* first vector */
+	double* y, /* second vector */
 	INT     n /* length of vectors */
 )
 {
@@ -2991,8 +2989,8 @@ Copy vector x into vector y
 ========================================================================= */
 PRIVATE void cg_copy0
 (
-	double *y, /* output of copy */
-	double *x, /* input of copy */
+	double* y, /* output of copy */
+	double* x, /* input of copy */
 	int     n  /* length of vectors */
 )
 {
@@ -3022,8 +3020,8 @@ Copy vector x into vector y
 ========================================================================= */
 PRIVATE void cg_copy
 (
-	double *y, /* output of copy */
-	double *x, /* input of copy */
+	double* y, /* output of copy */
+	double* x, /* input of copy */
 	INT     n  /* length of vectors */
 )
 {
@@ -3088,9 +3086,9 @@ Compute xtemp = x + alpha d
 ========================================================================= */
 PRIVATE void cg_step
 (
-	double *xtemp, /*output vector */
-	double     *x, /* initial vector */
-	double     *d, /* search direction */
+	double* xtemp, /*output vector */
+	double* x, /* initial vector */
+	double* d, /* search direction */
 	double  alpha, /* stepsize */
 	INT         n  /* length of the vectors */
 )
@@ -3111,14 +3109,14 @@ PRIVATE void cg_step
 	}
 	else
 	{
-		for (i = 0; i < n5; i++) xtemp[i] = x[i] + alpha*d[i];
+		for (i = 0; i < n5; i++) xtemp[i] = x[i] + alpha * d[i];
 		for (; i < n; i += 5)
 		{
-			xtemp[i] = x[i] + alpha*d[i];
-			xtemp[i + 1] = x[i + 1] + alpha*d[i + 1];
-			xtemp[i + 2] = x[i + 2] + alpha*d[i + 2];
-			xtemp[i + 3] = x[i + 3] + alpha*d[i + 3];
-			xtemp[i + 4] = x[i + 4] + alpha*d[i + 4];
+			xtemp[i] = x[i] + alpha * d[i];
+			xtemp[i + 1] = x[i + 1] + alpha * d[i + 1];
+			xtemp[i + 2] = x[i + 2] + alpha * d[i + 2];
+			xtemp[i + 3] = x[i + 3] + alpha * d[i + 3];
+			xtemp[i + 4] = x[i + 4] + alpha * d[i + 4];
 		}
 	}
 	return;
@@ -3131,7 +3129,7 @@ initialize x to a given scalar value
 ========================================================================= */
 PRIVATE void cg_init
 (
-	double *x, /* input and output vector */
+	double* x, /* input and output vector */
 	double  s, /* scalar */
 	INT     n /* length of vector */
 )
@@ -3163,9 +3161,9 @@ set d = -gnew
 ========================================================================= */
 PRIVATE double cg_update_2
 (
-	double *gold, /* old g */
-	double *gnew, /* new g */
-	double    *d, /* d */
+	double* gold, /* old g */
+	double* gnew, /* new g */
+	double* d, /* d */
 	INT        n /* length of vectors */
 )
 {
@@ -3179,33 +3177,33 @@ PRIVATE double cg_update_2
 		for (i = 0; i < n5; i++)
 		{
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 		}
 		for (; i < n; )
 		{
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			i++;
 		}
@@ -3215,38 +3213,38 @@ PRIVATE double cg_update_2
 		for (i = 0; i < n5; i++)
 		{
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			d[i] = -s;
 		}
 		for (; i < n; )
 		{
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			gold[i] = s;
 			d[i] = -s;
 			i++;
@@ -3257,33 +3255,33 @@ PRIVATE double cg_update_2
 		for (i = 0; i < n5; i++)
 		{
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			d[i] = -s;
 		}
 		for (; i < n; )
 		{
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			d[i] = -s;
 			i++;
 
 			s = gnew[i];
-			t += s*s;
+			t += s * s;
 			d[i] = -s;
 			i++;
 		}
@@ -3298,9 +3296,9 @@ Set gold = gnew, compute inf-norm of gnew, and optionally set d = -gnew
 ========================================================================= */
 PRIVATE double cg_update_inf
 (
-	double *gold, /* old g */
-	double *gnew, /* new g */
-	double    *d, /* d */
+	double* gold, /* old g */
+	double* gnew, /* new g */
+	double* d, /* d */
 	INT        n /* length of vectors */
 )
 {
@@ -3398,10 +3396,10 @@ ykgk = (gnew-gold) dot gnew
 ========================================================================= */
 PRIVATE double cg_update_ykyk
 (
-	double *gold, /* old g */
-	double *gnew, /* new g */
-	double *Ykyk,
-	double *Ykgk,
+	double* gold, /* old g */
+	double* gnew, /* new g */
+	double* Ykyk,
+	double* Ykgk,
 	INT        n /* length of vectors */
 )
 {
@@ -3418,8 +3416,8 @@ PRIVATE double cg_update_ykyk
 		if (gnorm < fabs(t)) gnorm = fabs(t);
 		yk = t - gold[i];
 		gold[i] = t;
-		ykgk += yk*t;
-		ykyk += yk*yk;
+		ykgk += yk * t;
+		ykyk += yk * yk;
 	}
 	for (; i < n; )
 	{
@@ -3427,40 +3425,40 @@ PRIVATE double cg_update_ykyk
 		if (gnorm < fabs(t)) gnorm = fabs(t);
 		yk = t - gold[i];
 		gold[i] = t;
-		ykgk += yk*t;
-		ykyk += yk*yk;
+		ykgk += yk * t;
+		ykyk += yk * yk;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
 		yk = t - gold[i];
 		gold[i] = t;
-		ykgk += yk*t;
-		ykyk += yk*yk;
+		ykgk += yk * t;
+		ykyk += yk * yk;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
 		yk = t - gold[i];
 		gold[i] = t;
-		ykgk += yk*t;
-		ykyk += yk*yk;
+		ykgk += yk * t;
+		ykyk += yk * yk;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
 		yk = t - gold[i];
 		gold[i] = t;
-		ykgk += yk*t;
-		ykyk += yk*yk;
+		ykgk += yk * t;
+		ykyk += yk * yk;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
 		yk = t - gold[i];
 		gold[i] = t;
-		ykgk += yk*t;
-		ykyk += yk*yk;
+		ykgk += yk * t;
+		ykyk += yk * yk;
 		i++;
 	}
 	*Ykyk = ykyk;
@@ -3475,10 +3473,10 @@ Set gold = gnew, compute inf-norm of gnew & 2-norm of gnew, set d = -gnew
 ========================================================================= */
 PRIVATE double cg_update_inf2
 (
-	double   *gold, /* old g */
-	double   *gnew, /* new g */
-	double      *d, /* d */
-	double *gnorm2, /* 2-norm of g */
+	double* gold, /* old g */
+	double* gnew, /* new g */
+	double* d, /* d */
+	double* gnorm2, /* 2-norm of g */
 	INT          n /* length of vectors */
 )
 {
@@ -3492,7 +3490,7 @@ PRIVATE double cg_update_inf2
 	{
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
-		s += t*t;
+		s += t * t;
 		gold[i] = t;
 		d[i] = -t;
 	}
@@ -3500,35 +3498,35 @@ PRIVATE double cg_update_inf2
 	{
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
-		s += t*t;
+		s += t * t;
 		gold[i] = t;
 		d[i] = -t;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
-		s += t*t;
+		s += t * t;
 		gold[i] = t;
 		d[i] = -t;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
-		s += t*t;
+		s += t * t;
 		gold[i] = t;
 		d[i] = -t;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
-		s += t*t;
+		s += t * t;
 		gold[i] = t;
 		d[i] = -t;
 		i++;
 
 		t = gnew[i];
 		if (gnorm < fabs(t)) gnorm = fabs(t);
-		s += t*t;
+		s += t * t;
 		gold[i] = t;
 		d[i] = -t;
 		i++;
@@ -3544,10 +3542,10 @@ Set d = -g + beta*d, compute 2-norm of d, and optionally the 2-norm of g
 ========================================================================= */
 PRIVATE double cg_update_d
 (
-	double      *d,
-	double      *g,
+	double* d,
+	double* g,
 	double    beta,
-	double *gnorm2, /* 2-norm of g */
+	double* gnorm2, /* 2-norm of g */
 	INT          n /* length of vectors */
 )
 {
@@ -3561,40 +3559,40 @@ PRIVATE double cg_update_d
 		for (i = 0; i < n5; i++)
 		{
 			t = g[i];
-			t = -t + beta*d[i];
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 		}
 		for (; i < n; )
 		{
 			t = g[i];
-			t = -t + beta*d[i];
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			t = -t + beta*d[i];
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			t = -t + beta*d[i];
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			t = -t + beta*d[i];
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			t = -t + beta*d[i];
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 		}
 	}
@@ -3604,46 +3602,46 @@ PRIVATE double cg_update_d
 		for (i = 0; i < n5; i++)
 		{
 			t = g[i];
-			s += t*t;
-			t = -t + beta*d[i];
+			s += t * t;
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 		}
 		for (; i < n; )
 		{
 			t = g[i];
-			s += t*t;
-			t = -t + beta*d[i];
+			s += t * t;
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			s += t*t;
-			t = -t + beta*d[i];
+			s += t * t;
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			s += t*t;
-			t = -t + beta*d[i];
+			s += t * t;
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			s += t*t;
-			t = -t + beta*d[i];
+			s += t * t;
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 
 			t = g[i];
-			s += t*t;
-			t = -t + beta*d[i];
+			s += t * t;
+			t = -t + beta * d[i];
 			d[i] = t;
-			dnorm2 += t*t;
+			dnorm2 += t * t;
 			i++;
 		}
 		*gnorm2 = s;
@@ -3659,10 +3657,10 @@ Compute y = gnew - gold, set gold = gnew, compute y'y
 ========================================================================= */
 PRIVATE void cg_Yk
 (
-	double    *y, /*output vector */
-	double *gold, /* initial vector */
-	double *gnew, /* search direction */
-	double  *yty, /* y'y */
+	double* y, /*output vector */
+	double* gold, /* initial vector */
+	double* gnew, /* search direction */
+	double* yty, /* y'y */
 	INT        n  /* length of the vectors */
 )
 {
@@ -3706,33 +3704,33 @@ PRIVATE void cg_Yk
 		{
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
-			s += t*t;
+			s += t * t;
 		}
 		for (; i < n; )
 		{
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
-			s += t*t;
+			s += t * t;
 			i++;
 		}
 		*yty = s;
@@ -3745,38 +3743,38 @@ PRIVATE void cg_Yk
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
 			y[i] = t;
-			s += t*t;
+			s += t * t;
 		}
 		for (; i < n; )
 		{
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
 			y[i] = t;
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
 			y[i] = t;
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
 			y[i] = t;
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
 			y[i] = t;
-			s += t*t;
+			s += t * t;
 			i++;
 
 			t = gnew[i] - gold[i];
 			gold[i] = gnew[i];
 			y[i] = t;
-			s += t*t;
+			s += t * t;
 			i++;
 		}
 		*yty = s;
@@ -3797,7 +3795,7 @@ could be changed, before passing the structure to cg_descent.
 =========================================================================*/
 void cg_default
 (
-	cg_parameter   *Parm
+	cg_parameter* Parm
 )
 {
 	/* T => print final function value
@@ -3995,7 +3993,7 @@ Print the contents of the cg_parameter structure
 ========================================================================= */
 PRIVATE void cg_printParms
 (
-	cg_parameter  *Parm
+	cg_parameter* Parm
 )
 {
 	printf("PARAMETERS:\n");
@@ -4135,7 +4133,6 @@ PRIVATE void cg_printParms
 Version 1.2 Change:
 1. The variable dpsi needs to be included in the argument list for
 subroutine cg_updateW (update of a Wolfe line search)
-
 Version 2.0 Changes:
 The user interface was redesigned. The parameters no longer need to
 be read from a file. For compatibility with earlier versions of the
@@ -4149,10 +4146,8 @@ The header file cg_user.h contains the structures and prototypes
 that the user may need to reference or modify, while cg_descent.h
 contains header elements that only cg_descent will access.  Note
 that the arguments of cg_descent have changed.
-
 Version 3.0 Changes:
 Major overhaul
-
 Version 4.0 Changes:
 Modifications 1-3 were made based on results obtained by Yu-Hong Dai and
 Cai-Xia Kou in the paper "A nonlinear conjugate gradient algorithm with an
@@ -4170,11 +4165,9 @@ it also seems to give slightly better performance than the
 lower bound BetaLower*d_k'g_k+1/ ||d_k||^2 suggested by Dai and Kou.
 5. Evaluation of the objective function and gradient is now handled by
 the routine cg_evaluate.
-
 Version 4.1 Changes:
 1. Change cg_tol to be consistent with corresponding routine in asa_cg
 2. Compute dnorm2 when d is evaluated and make loops consistent with asa_cg
-
 Version 4.2 Changes:
 1. Modify the line search so that when there are too many contractions,
 the code will increase eps and switch to expansion of the search interval.
@@ -4186,7 +4179,6 @@ interval is larger than the value at the left side (because the true
 objective function value on the right is not greater than the value on
 the left).
 2. Fix bug in cg_lineW
-
 Version 5.0 Changes:
 Revise the line search routines to exploit steps based on the
 minimizer of a Hermite interpolating cubic. Combine the approximate
@@ -4194,12 +4186,10 @@ and the ordinary Wolfe line search into a single routine.
 Include safeguarded extrapolation during the expansion phase
 of the line search. Employ a quadratic interpolation step even
 when the requirement ftemp < f for a quadstep is not satisfied.
-
 Version 5.1 Changes:
 1. Shintaro Kaneko pointed out spelling error in line 738, change
 "stict" to "strict"
 2. Add MATLAB interface
-
 Version 5.2 Changes:
 1. Make QuadOK always TRUE in the quadratic interpolation step.
 2. Change QuadSafe to 1.e-10 instead of 1.e-3 (less safe guarding).
@@ -4210,13 +4200,11 @@ is the maximum of {psi_lo*psi2, prior df/(current df)}*previous step
 5. In quadratic step routine, the function is evaluated on the safe-guarded
 interval [psi_lo, phi_hi]*psi2*previous step.
 6. Allow more rapid expansion in the line search routine.
-
 Version 5.3 Changes:
 1. Make changes so that cg_descent works with version R2012a of MATLAB.
 This required allocating memory for the work array inside the MATLAB
 mex routine and rearranging memory so that the xtemp pointer and the
 work array pointer are the same.
-
 Version 6.0 Changes:
 Major revision of the code to implement the limited memory conjugate
 gradient algorithm documented in reference [4] at the top of this file.
@@ -4233,46 +4221,38 @@ the algorithm solves a subspace problem until orthogonality is restored.
 It is now possible to utilize the BLAS, if they are available, by
 commenting out a line in the file cg_blas.h. See the README file for
 the details.
-
 Version 6.1 Changes:
 Fixed problems connected with memory handling in the MATLAB version
 of the code. These errors only arise when using some versions of MATLAB.
 Replaced "malloc" in the cg_descent mex routine with "mxMalloc".
 Thanks to Stephen Vavasis for reporting this error that occurred when
 using MATLAB version R2012a, 7.14.
-
 Version 6.2 Change:
 When using cg_descent in MATLAB, the input starting guess is no longer
 overwritten by the final solution. This makes the cg_descent mex function
 compliant with MATLAB's convention for the treatment of input arguments.
 Thanks to Dan Scholnik, Naval Research Laboratory, for pointing out this
 inconsistency with MATLAB convention in earlier versions of cg_descent.
-
 Version 6.3 Change:
 For problems of dimension <= Parm->memory (default 11), the final
 solution was not copied to the user's solution argument x. Instead x
 stored the the next-to-final iterate. This final copy is now inserted
 on line 969.  Thanks to Arnold Neumaier of the University of Vienna
 for pointing out this bug.
-
 Version 6.4 Change:
 In order to prevent a segmentation fault connected with MATLAB's memory
 handling, inserted a copy statement inside cg_evaluate. This copy is
 only needed when solving certain problems with MATLAB.  Many thanks
 to Arnold Neumaier for pointing out this problem
-
 Version 6.5 Change:
 When using the code in MATLAB, changed the x vector that is passed to
 the user's function and gradient routine to be column vectors instead
 of row vectors.
-
 Version 6.6 Change:
 Expand the statistics structure to include the number of subspaces (NumSub)
 and the number of subspace iterations (IterSub).
-
 Version 6.7 Change:
 Add interface to CUTEst
-
 Version 6.8 Change:
 When the denominator of the variable "scale" vanishes, retain the
 previous value of scale. This correct an error pointed out by

@@ -1,6 +1,4 @@
 #pragma once
-INT n;			//The size of the problem
-
 				/*===== 0 =================== ARWHEAD Function ================ 5000 ===================*/
 double ARWHEADvalgrad
 (
@@ -1923,40 +1921,40 @@ double DIXMAANJvalgrad
 	double fx = 1.0;
 	double item1 = (0.0);
 	double item2 = (0.0);
-	int m = (n / 3);
-	for (i = 0; i < n; i++)
+	int m = (nn / 3);
+	for (i = 0; i < nn; i++)
 		g[i] = 0;
 	for (i = 0; i < m; i++)
 	{
 		item1 = 0.25* x[i] * (x[i + 1] + x[i + 1] * x[i + 1]);
 		item2 = 0.25* x[i] * pow(x[i + m], 2);
-		fx += pow(x[i], 2)*pow((i + 1) / (double)(n), 2) + item1*item1 + item2*item2
-			+ 0.0625*x[i] * x[i + 2 * m] * pow((i + 1) / (double)(n), 2);
-		g[i] += 2 * x[i] * pow((i + 1) / (double)(n), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
-			+ 0.5*item2*pow(x[i + m], 2) + 0.0625*x[i + 2 * m] * pow((i + 1) / (double)(n), 2);
+		fx += pow(x[i], 2)*pow((i + 1) / (double)(nn), 2) + item1*item1 + item2*item2
+			+ 0.0625*x[i] * x[i + 2 * m] * pow((i + 1) / (double)(nn), 2);
+		g[i] += 2 * x[i] * pow((i + 1) / (double)(nn), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
+			+ 0.5*item2*pow(x[i + m], 2) + 0.0625*x[i + 2 * m] * pow((i + 1) / (double)(nn), 2);
 		g[i + 1] += 0.5*item1*x[i] * (1 + 2 * x[i + 1]);
 		g[i + m] += item2 *x[i] * x[i + m];
-		g[i + 2 * m] += 0.0625*x[i] * pow((i + 1) / (double)(n), 2);
+		g[i + 2 * m] += 0.0625*x[i] * pow((i + 1) / (double)(nn), 2);
 	}
 	for (i = m; i < 2 * m; i++)
 	{
 		item1 = 0.25* x[i] * (x[i + 1] + x[i + 1] * x[i + 1]);
 		item2 = 0.25* x[i] * pow(x[i + m], 2);
-		fx += pow(x[i], 2)*pow((i + 1) / (double)(n), 2) + item1*item1 + item2*item2;
-		g[i] += 2 * x[i] * pow((i + 1) / (double)(n), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
+		fx += pow(x[i], 2)*pow((i + 1) / (double)(nn), 2) + item1*item1 + item2*item2;
+		g[i] += 2 * x[i] * pow((i + 1) / (double)(nn), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
 			+ 0.5*item2*pow(x[i + m], 2);
 		g[i + 1] += 0.5*item1*x[i] * (1 + 2 * x[i + 1]);
 		g[i + m] += item2 *x[i] * x[i + m];
 	}
-	for (i = 2 * m; i < n - 1; i++)
+	for (i = 2 * m; i < nn - 1; i++)
 	{
 		item1 = 0.25* x[i] * (x[i + 1] + x[i + 1] * x[i + 1]);
-		fx += pow(x[i], 2)*pow((i + 1) / (double)(n), 2) + item1*item1;
-		g[i] += 2 * x[i] * pow((i + 1) / (double)(n), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1]);
+		fx += pow(x[i], 2)*pow((i + 1) / (double)(nn), 2) + item1*item1;
+		g[i] += 2 * x[i] * pow((i + 1) / (double)(nn), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1]);
 		g[i + 1] += 0.5*item1*x[i] * (1 + 2 * x[i + 1]);
 	}
-	fx += pow(x[n - 1], 2);
-	g[n - 1] += 2 * x[n - 1];
+	fx += pow(x[nn - 1], 2);
+	g[nn - 1] += 2 * x[nn - 1];
 	return fx;
 }
 void DIXMAANJgrad
@@ -1969,35 +1967,35 @@ void DIXMAANJgrad
 	INT i;
 	double item1 = (0.0);
 	double item2 = (0.0);
-	int m = (n / 3);
-	for (i = 0; i < n; i++)
+	int m = (nn / 3);
+	for (i = 0; i < nn; i++)
 		g[i] = 0;
 	for (i = 0; i < m; i++)
 	{
 		item1 = 0.25* x[i] * (x[i + 1] + x[i + 1] * x[i + 1]);
 		item2 = 0.25* x[i] * pow(x[i + m], 2);
-		g[i] += 2 * x[i] * pow((i + 1) / (double)(n), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
-			+ 0.5*item2*pow(x[i + m], 2) + 0.0625*x[i + 2 * m] * pow((i + 1) / (double)(n), 2);
+		g[i] += 2 * x[i] * pow((i + 1) / (double)(nn), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
+			+ 0.5*item2*pow(x[i + m], 2) + 0.0625*x[i + 2 * m] * pow((i + 1) / (double)(nn), 2);
 		g[i + 1] += 0.5*item1*x[i] * (1 + 2 * x[i + 1]);
 		g[i + m] += item2 *x[i] * x[i + m];
-		g[i + 2 * m] += 0.0625*x[i] * pow((i + 1) / (double)(n), 2);
+		g[i + 2 * m] += 0.0625*x[i] * pow((i + 1) / (double)(nn), 2);
 	}
 	for (i = m; i < 2 * m; i++)
 	{
 		item1 = 0.25* x[i] * (x[i + 1] + x[i + 1] * x[i + 1]);
 		item2 = 0.25* x[i] * pow(x[i + m], 2);
-		g[i] += 2 * x[i] * pow((i + 1) / (double)(n), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
+		g[i] += 2 * x[i] * pow((i + 1) / (double)(nn), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1])
 			+ 0.5*item2*pow(x[i + m], 2);
 		g[i + 1] += 0.5*item1*x[i] * (1 + 2 * x[i + 1]);
 		g[i + m] += item2 *x[i] * x[i + m];
 	}
-	for (i = 2 * m; i < n - 1; i++)
+	for (i = 2 * m; i < nn - 1; i++)
 	{
 		item1 = 0.25* x[i] * (x[i + 1] + x[i + 1] * x[i + 1]);
-		g[i] += 2 * x[i] * pow((i + 1) / (double)(n), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1]);
+		g[i] += 2 * x[i] * pow((i + 1) / (double)(nn), 2) + 0.5*item1*(x[i + 1] + x[i + 1] * x[i + 1]);
 		g[i + 1] += 0.5*item1*x[i] * (1 + 2 * x[i + 1]);
 	}
-	g[n - 1] += 2 * x[n - 1];
+	g[nn - 1] += 2 * x[nn - 1];
 }
 double DIXMAANJvalue
 (
@@ -3983,6 +3981,7 @@ void WOODSStartingGess
 		x[i + 1] = -1;
 	}
 }
+
 /*------------------  end of tests ------------------------*/
 struct testFunction
 {
@@ -4011,8 +4010,8 @@ struct testFunction
 			INT       n
 			);
 };
-const INT TestNumber = 45;
-struct testFunction test[45];
+const INT TestNumber = 44;
+struct testFunction test[44];
 
 void makeTestCollection(struct testFunction* t)
 {
@@ -4066,7 +4065,7 @@ void makeTestCollection(struct testFunction* t)
 	test[6].valgrad = CRAGGLVYvalgrad;
 	test[6].StartingGess = CRAGGLVYStartingGess;
 	//8-CURLY10
-	test[7].size = 10000;
+	test[7].size = 500;
 	strcpy(test[7].name, "CURLY10");
 	test[7].value = CURLY10value;
 	test[7].grad = CURLY10grad;
@@ -4303,36 +4302,29 @@ void makeTestCollection(struct testFunction* t)
 	test[40].grad = POWERgrad;
 	test[40].valgrad = POWERvalgrad;
 	test[40].StartingGess = POWERStartingGess;
-	//42-QARTC
+	//42-SROSENBR
 	test[41].size = 10000;
-	strcpy(test[41].name, "QARTC");
-	test[41].value = QARTCvalue;
-	test[41].grad = QARTCgrad;
-	test[41].valgrad = QARTCvalgrad;
-	test[41].StartingGess = QARTCStartingGess;
-	//43-SROSENBR
+	strcpy(test[41].name, "SROSENBR");
+	test[41].value = SROSENBRvalue;
+	test[41].grad = SROSENBRgrad;
+	test[41].valgrad = SROSENBRvalgrad;
+	test[41].StartingGess = SROSENBRStartingGess;
+	//43-TRIDIA
 	test[42].size = 10000;
-	strcpy(test[42].name, "SROSENBR");
-	test[42].value = SROSENBRvalue;
-	test[42].grad = SROSENBRgrad;
-	test[42].valgrad = SROSENBRvalgrad;
-	test[42].StartingGess = SROSENBRStartingGess;
-	//44-TRIDIA
+	strcpy(test[42].name, "TRIDIA");
+	test[42].value = TRIDIAvalue;
+	test[42].grad = TRIDIAgrad;
+	test[42].valgrad = TRIDIAvalgrad;
+	test[42].StartingGess = TRIDIAStartingGess;
+	//44-WOODS
 	test[43].size = 10000;
-	strcpy(test[43].name, "TRIDIA");
-	test[43].value = TRIDIAvalue;
-	test[43].grad = TRIDIAgrad;
-	test[43].valgrad = TRIDIAvalgrad;
-	test[43].StartingGess = TRIDIAStartingGess;
-	//45-WOODS
-	test[44].size = 10000;
-	strcpy(test[44].name, "WOODS");
-	test[44].value = WOODSvalue;
-	test[44].grad = WOODSgrad;
-	test[44].valgrad = WOODSvalgrad;
-	test[44].StartingGess = WOODSStartingGess;
+	strcpy(test[43].name, "WOODS");
+	test[43].value = WOODSvalue;
+	test[43].grad = WOODSgrad;
+	test[43].valgrad = WOODSvalgrad;
+	test[43].StartingGess = WOODSStartingGess;
 }
-void iSort(double* a, int size)
+void iSort(int* a, int size)
 {
 	if (size>1)
 	{
