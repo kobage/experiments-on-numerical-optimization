@@ -1,0 +1,168 @@
+1. Problem:  ARWHEAD,  size: 5000
+Algorithm: MHB,    Objective function:  2.0424e-10,   Value-Grad evaluations:  44,   Restarts (line searches):  12
+Average time:  2101 microseconds
+Gradient inf norm: 2.19232e-07
+
+2. Problem:  BDQRTIC,  size: 1000
+Algorithm: MHB,    Objective function:  3983.82,   Value-Grad evaluations:  2236,   Restarts (line searches):  565
+Average time:  20804 microseconds
+Gradient inf norm: 9.46277e-07
+
+3. Problem:  BROYDN7D,  size: 1000
+Algorithm: MHB,    Objective function:  393.289,   Value-Grad evaluations:  949,   Restarts (line searches):  74
+Average time:  83981 microseconds
+Gradient inf norm: 9.13028e-07
+
+4. Problem:  BRYBND,  size: 1000
+Algorithm: MHB,    Objective function:  1.90188e-14,   Value-Grad evaluations:  72,   Restarts (line searches):  21
+Average time:  996 microseconds
+Gradient inf norm: 4.10997e-07
+
+5. Problem:  CHAINWOO,  size: 1000
+Algorithm: MHB,    Objective function:  12.4217,   Value-Grad evaluations:  1462,   Restarts (line searches):  197
+Average time:  12839 microseconds
+
+6. Problem:  COSINE,  size: 10000
+Algorithm: MHB,    Objective function:  -9999,   Value-Grad evaluations:  38,   Restarts (line searches):  11
+Average time:  8940 microseconds
+Gradient inf norm: 8.47642e-07
+
+7. Problem:  CRAGGLVY,  size: 5000
+Algorithm: MHB,    Objective function:  1688.22,   Value-Grad evaluations:  291,   Restarts (line searches):  46
+Average time:  49854 microseconds
+Gradient inf norm: 7.53473e-07
+
+8. Problem:  CURLY10,  size: 500
+Algorithm: MHB,    Objective function:  -50158.1,   Value-Grad evaluations:  68618,   Restarts (line searches):  15004
+Average time:  602163 microseconds
+Gradient inf norm: 9.78876e-07
+
+9. Problem:  DIXMAANA,  size: 5000
+Algorithm: MHB,    Objective function:  1.41007e-09,   Value-Grad evaluations:  70,   Restarts (line searches):  11
+Average time:  32930 microseconds
+Gradient inf norm: 5.58792e-07
+
+10. Problem:  DIXMAANE,  size: 3000
+Algorithm: MHB,    Objective function:  2.93626e-10,   Value-Grad evaluations:  569,   Restarts (line searches):  51
+Average time:  145559 microseconds
+Gradient inf norm: 8.22121e-07
+
+11. Problem:  DIXMAANI,  size: 3000
+Algorithm: MHB,    Objective function:  3.20883e-07,   Value-Grad evaluations:  3982,   Restarts (line searches):  39
+Average time:  1815134 microseconds
+Gradient inf norm: 9.01166e-07
+
+12. Problem:  DIXON3DQ,  size: 5000
+Algorithm: MHB,    Objective function:  1.84371e-09,   Value-Grad evaluations:  14601,   Restarts (line searches):  39
+Average time:  461848 microseconds
+Gradient inf norm: 6.6684e-07
+
+13. Problem:  DQDRTIC,  size: 5000
+Algorithm: MHB,    Objective function:  2.36815e-13,   Value-Grad evaluations:  140,   Restarts (line searches):  19
+Average time:  5510 microseconds
+Gradient inf norm: 6.65849e-07
+
+14. Problem:  DQRTIC,  size: 5000
+Algorithm: MHB,    Objective function:  2.56111e-06,   Value-Grad evaluations:  155,   Restarts (line searches):  20
+Average time:  5102 microseconds
+Gradient inf norm: 3.16363e-07
+
+15. Problem:  EDENSCH,  size: 2000
+Algorithm: MHB,    Objective function:  43971.3,   Value-Grad evaluations:  92,   Restarts (line searches):  21
+Average time:  1622 microseconds
+Gradient inf norm: 9.00995e-07
+
+16. Problem:  EG2,  size: 5000
+Algorithm: MHB,    Objective function:  -4998.95,   Value-Grad evaluations:  17,   Restarts (line searches):  4
+Average time:  2846 microseconds
+Gradient inf norm: 2.0496e-11
+
+17. Problem:  ENGVAL1,  size: 5000
+Algorithm: MHB,    Objective function:  5548.67,   Value-Grad evaluations:  101,   Restarts (line searches):  22
+Average time:  4000 microseconds
+Gradient inf norm: 6.91352e-07
+
+18. Problem:  EXTROSNB,  size: 1000
+Algorithm: MHB,    Objective function:  3.36548e-07,   Value-Grad evaluations:  5055,   Restarts (line searches):  31
+Average time:  34780 microseconds
+Gradient inf norm: 7.90078e-07
+
+19. Problem:  FLETCHR,  size: 1000
+Algorithm: MHB,    Objective function:  1.41891e-06,   Value-Grad evaluations:  764146,   Restarts (line searches):  253968
+Average time:  4957686 microseconds
+Gradient inf norm: 9.99984e-07
+
+20. Problem:  FREUROTH,  size: 5000
+Algorithm: MHB,    Objective function:  608159,   Value-Grad evaluations:  1132,   Restarts (line searches):  223
+Average time:  54012 microseconds
+Gradient inf norm: 9.98096e-07
+
+21. Problem:  GENHUMPS,  size: 5000
+Algorithm: MHB,    Objective function:  3.55161e-11,   Value-Grad evaluations:  184,   Restarts (line searches):  19
+Average time:  14454 microseconds
+Gradient inf norm: 8.74356e-07
+
+22. Problem:  GENROSE,  size: 1000
+Algorithm: MHB,    Objective function:  1,   Value-Grad evaluations:  168,   Restarts (line searches):  24
+Average time:  1255 microseconds
+Gradient inf norm: 6.55669e-07
+
+23. Problem:  LIARWDH,  size: 5000
+Algorithm: MHB,    Objective function:  1.09901e-11,   Value-Grad evaluations:  39414,   Restarts (line searches):  13118
+Average time:  1389849 microseconds
+Gradient inf norm: 9.97569e-07
+
+24. Problem:  MOREBV,  size: 5000
+Algorithm: MHB,    Objective function:  1.04017e-11,   Value-Grad evaluations:  1,   Restarts (line searches):  0
+Average time:  698 microseconds
+Gradient inf norm: 4.79616e-07
+
+25. Problem:  NONCVXU2,  size: 1000
+Algorithm: MHB,    Objective function:  2316.81,   Value-Grad evaluations:  5140,   Restarts (line searches):  149
+Average time:  147057 microseconds
+Gradient inf norm: 5.82405e-07
+
+26. Problem:  NONDIA,  size: 10000
+Algorithm: MHB,    Objective function:  6.39309e-07,   Value-Grad evaluations:  47,   Restarts (line searches):  8
+Average time:  4328 microseconds
+Gradient inf norm: 8.49775e-07
+
+27. Problem:  NONQUAR,  size: 1000
+Algorithm: MHB,    Objective function:  1.79524e-06,   Value-Grad evaluations:  5085,   Restarts (line searches):  81
+Average time:  61345 microseconds
+Gradient inf norm: 8.78376e-07
+
+28. Problem:  PENALTY1,  size: 1000
+Algorithm: MHB,    Objective function:  0.00968629,   Value-Grad evaluations:  2147,   Restarts (line searches):  695
+Average time:  13503 microseconds
+Gradient inf norm: 9.99522e-07
+
+29. Problem:  PENALTY2,  size: 100
+Algorithm: MHB,    Objective function:  97096.1,   Value-Grad evaluations:  334,   Restarts (line searches):  66
+Average time:  1309 microseconds
+Gradient inf norm: 8.79898e-07
+
+30. Problem:  POWER,  size: 1000
+Algorithm: MHB,    Objective function:  5.20986e-14,   Value-Grad evaluations:  11744,   Restarts (line searches):  75
+Average time:  67245 microseconds
+Gradient inf norm: 9.68425e-07
+
+31. Problem:  SROSENBR,  size: 10000
+Algorithm: MHB,    Objective function:  1.02423e-08,   Value-Grad evaluations:  1614,   Restarts (line searches):  410
+Average time:  87613 microseconds
+Gradient inf norm: 9.98684e-07
+
+32. Problem:  TRIDIA,  size: 10000
+Algorithm: MHB,    Objective function:  9.00742e-14,   Value-Grad evaluations:  4155,   Restarts (line searches):  64
+Average time:  294068 microseconds
+Gradient inf norm: 9.99309e-07
+
+33. Problem:  Woods,  size: 5000
+Algorithm: MHB,    Objective function:  6.04617e-10,   Value-Grad evaluations:  716,   Restarts (line searches):  160
+Average time:  21388 microseconds
+Gradient inf norm: 3.33693e-07
+
+34. Problem:  quadrPenalSMG,  size: 200
+Algorithm: MHB,    Objective function:  5.79606e-10,   Value-Grad evaluations:  10401,   Restarts (line searches):  83
+Average time:  576827 microseconds
+Gradient inf norm: 2.49659e-07

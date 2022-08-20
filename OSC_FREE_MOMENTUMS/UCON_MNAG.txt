@@ -1,0 +1,169 @@
+1. Problem:  ARWHEAD,  size: 5000
+Algorithm: MNAG,    Objective function:  2.1978e-10,   Value-Grad evaluations:  152,   Restarts (line searches):  5
+Average time:  4489 microseconds
+Gradient inf norm: 7.73807e-07
+
+2, Problem:  BDQRTIC,  size: 1000
+Algorithm: MNAG,    Objective function:  3983.82,   Value-Grad evaluations:  1131,   Restarts (line searches):  131
+Average time:  9825 microseconds
+Gradient inf norm: 9.68586e-07
+
+3. Problem:  BROYDN7D,  size: 1000
+Algorithm: MNAG,    Objective function:  402.688,   Value-Grad evaluations:  1147,   Restarts (line searches):  17
+Average time:  94800 microseconds
+Gradient inf norm: 6.25285e-07
+
+4. Problem:  BRYBND,  size: 1000
+Algorithm: MNAG,    Objective function:  2.89025e-14,   Value-Grad evaluations:  82,   Restarts (line searches):  11
+Average time:  828 microseconds
+Gradient inf norm: 6.78485e-07
+
+5. Problem:  CHAINWOO,  size: 1000
+Algorithm: MNAG,    Objective function:  1,   Value-Grad evaluations:  8921,   Restarts (line searches):  83
+Average time:  64049 microseconds
+Gradient inf norm: 9.78488e-07
+
+6. Problem:  COSINE,  size: 10000
+Algorithm: MNAG,    Objective function:  -9999,   Value-Grad evaluations:  59,   Restarts (line searches):  6
+Average time:  10723 microseconds
+Gradient inf norm: 4.69817e-08
+
+7. Problem:  CRAGGLVY,  size: 5000
+Algorithm: MNAG,    Objective function:  1688.22,   Value-Grad evaluations:  393,   Restarts (line searches):  23
+Average time:  61137 microseconds
+Gradient inf norm: 9.35557e-07
+
+8. Problem:  CURLY10,  size: 500
+Algorithm: MNAG,    Objective function:  -50158.1,   Value-Grad evaluations:  34256,   Restarts (line searches):  4149
+Average time:  292343 microseconds
+Gradient inf norm: 8.68851e-07
+
+9. Problem:  DIXMAANA,  size: 5000
+Algorithm: MNAG,    Objective function:  6.96759e-10,   Value-Grad evaluations:  65,   Restarts (line searches):  6
+Average time:  30698 microseconds
+Gradient inf norm: 8.58323e-07
+
+10. Problem:  DIXMAANE,  size: 3000
+Algorithm: MNAG,    Objective function:  2.96718e-10,   Value-Grad evaluations:  955,   Restarts (line searches):  30
+Average time:  254378 microseconds
+Gradient inf norm: 9.17231e-07
+
+11. Problem:  DIXMAANI,  size: 3000
+Algorithm: MNAG,    Objective function:  5.01408e-07,   Value-Grad evaluations:  7489,   Restarts (line searches):  52
+Average time:  3878924 microseconds
+Gradient inf norm: 9.98462e-07
+
+12. Problem:  DIXON3DQ,  size: 5000
+Algorithm: MNAG,    Objective function:  2.13339e-08,   Value-Grad evaluations:  26149,   Restarts (line searches):  4
+Average time:  867529 microseconds
+Gradient inf norm: 9.95388e-07
+
+13. Problem:  DQDRTIC,  size: 5000
+Algorithm: MNAG,    Objective function:  7.40628e-11,   Value-Grad evaluations:  172,   Restarts (line searches):  7
+Average time:  4664 microseconds
+Gradient inf norm: 2.64409e-08
+
+14. Problem:  DQRTIC,  size: 5000
+Algorithm: MNAG,    Objective function:  4.69808e-06,   Value-Grad evaluations:  199,   Restarts (line searches):  14
+Average time:  4640 microseconds
+Gradient inf norm: 3.73706e-07
+
+15. Problem:  EDENSCH,  size: 2000
+Algorithm: MNAG,    Objective function:  43971.3,   Value-Grad evaluations:  113,   Restarts (line searches):  14
+Average time:  1612 microseconds
+Gradient inf norm: 2.13008e-07
+
+16. Problem:  EG2,  size: 5000
+Algorithm: MNAG,    Objective function:  -4998.94,   Value-Grad evaluations:  21,   Restarts (line searches):  3
+Average time:  2585 microseconds
+Gradient inf norm: 4.94292e-11
+
+17. Problem:  ENGVAL1,  size: 5000
+Algorithm: MNAG,    Objective function:  5548.67,   Value-Grad evaluations:  104,   Restarts (line searches):  11
+Average time:  2992 microseconds
+Gradient inf norm: 6.84426e-07
+
+18. Problem:  EXTROSNB,  size: 1000
+Algorithm: MNAG,    Objective function:  3.46329e-12,   Value-Grad evaluations:  33559,   Restarts (line searches):  23
+Average time:  1922066 microseconds
+Gradient inf norm: 1.35424e-07
+
+19. Problem:  FLETCHR,  size: 1000
+Algorithm: MNAG,    Objective function:  8.55695e-08,   Value-Grad evaluations:  10620,   Restarts (line searches):  52
+Average time:  59274 microseconds
+Gradient inf norm: 8.36776e-07
+
+20. Problem:  FREUROTH,  size: 5000
+Algorithm: MNAG,    Objective function:  608159,   Value-Grad evaluations:  456,   Restarts (line searches):  7
+Average time:  18908 microseconds
+Gradient inf norm: 1.60091e-07
+
+21. Problem:  GENHUMPS,  size: 5000
+Algorithm: MNAG,    Objective function:  2.08062e-09,   Value-Grad evaluations:  9366,   Restarts (line searches):  6
+Average time:  945953 microseconds
+Gradient inf norm: 3.45557e-11
+
+22. Problem:  GENROSE,  size: 1000
+Algorithm: MNAG,    Objective function:  1,   Value-Grad evaluations:  155,   Restarts (line searches):  10
+Average time:  876 microseconds
+Gradient inf norm: 7.89294e-07
+
+23. Problem:  LIARWDH,  size: 5000
+Algorithm: MNAG,    Objective function:  2.84236e-11,   Value-Grad evaluations:  732,   Restarts (line searches):  5
+Average time:  22241 microseconds
+Gradient inf norm: 3.58519e-08
+
+24. Problem:  MOREBV,  size: 5000
+Algorithm: MNAG,    Objective function:  1.04017e-11,   Value-Grad evaluations:  1,   Restarts (line searches):  0
+Average time:  771 microseconds
+Gradient inf norm: 4.79616e-07
+
+25. Problem:  NONCVXU2,  size: 1000
+Algorithm: MNAG,    Objective function:  2317.1,   Value-Grad evaluations:  9378,   Restarts (line searches):  51
+Average time:  303297 microseconds
+Gradient inf norm: 9.88712e-07
+
+26. Problem:  NONDIA,  size: 10000
+Algorithm: MNAG,    Objective function:  6.3924e-07,   Value-Grad evaluations:  34,   Restarts (line searches):  5
+Average time:  2139 microseconds
+Gradient inf norm: 3.19722e-07
+
+27. Problem:  NONQUAR,  size: 1000
+Algorithm: MNAG,    Objective function:  1.91074e-06,   Value-Grad evaluations:  10532,   Restarts (line searches):  47
+Average time:  109749 microseconds
+Gradient inf norm: 9.89149e-07
+
+28. Problem:  PENALTY1,  size: 1000
+Algorithm: MNAG,    Objective function:  0.00968646,   Value-Grad evaluations:  291,   Restarts (line searches):  5
+Average time:  1624 microseconds
+Gradient inf norm: 1.1414e-07
+
+29. Problem:  PENALTY2,  size: 100
+Algorithm: MNAG,    Objective function:  97096.1,   Value-Grad evaluations:  474,   Restarts (line searches):  38
+Average time:  958 microseconds
+Gradient inf norm: 6.73013e-07
+
+30. Problem:  POWER,  size: 1000
+Algorithm: MNAG,    Objective function:  6.53037e-14,   Value-Grad evaluations:  13070,   Restarts (line searches):  75
+Average time:  66660 microseconds
+Gradient inf norm: 9.59756e-07
+
+31. Problem:  SROSENBR,  size: 10000
+Algorithm: MNAG,    Objective function:  2.21875e-09,   Value-Grad evaluations:  297,   Restarts (line searches):  6
+Average time:  12679 microseconds
+Gradient inf norm: 3.20181e-07
+
+32. Problem:  TRIDIA,  size: 10000
+Algorithm: MNAG,    Objective function:  2.57702e-13,   Value-Grad evaluations:  7671,   Restarts (line searches):  79
+Average time:  550286 microseconds
+Gradient inf norm: 9.78998e-07
+
+33. Problem:  Woods,  size: 5000
+Algorithm: MNAG,    Objective function:  9.68022e-10,   Value-Grad evaluations:  498,   Restarts (line searches):  14
+Average time:  11657 microseconds
+Gradient inf norm: 7.82228e-07
+
+34. Problem:  quadrPenalSMG,  size: 200
+Algorithm: MNAG,    Objective function:  5.6121e-10,   Value-Grad evaluations:  17892,   Restarts (line searches):  69
+Average time:  1236430 microseconds
+Gradient inf norm: 1.80267e-07
