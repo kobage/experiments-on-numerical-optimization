@@ -5,7 +5,7 @@
 
 inline double infNorm
 (
-	double *x, /* vector */
+	double* x, /* vector */
 	int     k /* length of vector */
 )
 {
@@ -25,7 +25,7 @@ inline double infNorm
 	return (t);
 }
 
-inline void vec2norm(double *ans, double *gr, const int k)
+inline void vec2norm(double* ans, double* gr, const int k)
 {
 	int i, n5;
 	*ans = 0.;
@@ -39,7 +39,7 @@ inline void vec2norm(double *ans, double *gr, const int k)
 	*ans = sqrt(*ans);
 }
 
-inline double vecProd(double *x, double *y, const int k)
+inline double vecProd(double* x, double* y, const int k)
 {
 	int i, n5;
 	double sum(0.0);
@@ -54,7 +54,7 @@ inline double vecProd(double *x, double *y, const int k)
 	return sum;
 }
 
-inline void vecCopy(double *x, double *y, const int n)
+inline void vecCopy(double* x, double* y, const int n)
 {
 	int i, n5;
 	if (n <= 0) return;
@@ -105,5 +105,5 @@ void fillRandomMatrix(double** M, int k)
 	}
 	for (int i = 0; i < k; i++)
 		for (int j = i + 1; j < k; j++)
-			M[i][j] = (-1.0* M[j][i]);
+			M[i][j] = (-1.0 * M[j][i]);
 }

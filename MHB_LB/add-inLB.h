@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include<iostream>
 #include"chrono"
 #include <cmath>
@@ -1043,7 +1044,7 @@ void makeLbTestsVector(void)
 	tmpTest.Initializer = Initialize_sg;
 	tmpTest.testName = "Symmetric game with objective function, cubic with respect to original variables";
 	tmpTest.recoveringtAttributes = recoveringAttributes_sg;
-	tmpTest.size = 400;
+	tmpTest.size = 200;
 	lb_testsVector.push_back(tmpTest);
 	//9
 	tmpTest.fName = sgValGradQuadratic;
@@ -1138,9 +1139,11 @@ void runTests_LB()
 		lb_testsVector[i].Initializer(x0, n);
 		
 		if (lb_testsVector[i].fNameComposite == sgComposite || lb_testsVector[i].fNameComposite == sgQuadraticComposite)
-			u_min::mhb(lnSrch, lb_testsVector[i].fNameComposite, stoppingByDeviation);
+			u_min::MNAG(lnSrch, lb_testsVector[i].fNameComposite, stoppingByDeviation);
+		//	u_min::mhb(lnSrch, lb_testsVector[i].fNameComposite, stoppingByDeviation);
 		else
-			u_min::mhb(lnSrch, lb_testsVector[i].fNameComposite, stoppingByProjGradInfNorm_LB);
+			u_min::MNAG(lnSrch, lb_testsVector[i].fNameComposite, stoppingByProjGradInfNorm_LB);
+		//	u_min::mhb(lnSrch, lb_testsVector[i].fNameComposite, stoppingByProjGradInfNorm_LB);
 
 		lb_testsVector[i].recoveringtAttributes(x0, n);
 

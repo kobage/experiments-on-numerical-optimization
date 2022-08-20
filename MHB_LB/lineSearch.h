@@ -32,10 +32,10 @@ void lineSearch::operator()(Problem functionName) noexcept
 	//I.begin() 
 	t = infNorm(x0, n);
 	if (t != 0.)
-		b = (FSI0*t) / infNorm(g0, n);
+		b = (FSI0 * t) / infNorm(g0, n);
 	else
 		if (f0 != 0.)
-			b = -(FSI0*fabs(f0)) / fiPrime0;
+			b = -(FSI0 * fabs(f0)) / fiPrime0;
 		else
 			b = 1.;
 	//I.end()
@@ -49,10 +49,10 @@ void lineSearch::operator()(Problem functionName) noexcept
 		//< Termination test in b >;
 		//T.begin()
 		for (int i = 0; i < n; i++)
-			x1[i] = x0[i] - b*g0[i];
+			x1[i] = x0[i] - b * g0[i];
 		fiB = functionName(x1, g1, n);
 		fiPrime_b = -vecProd(g1, g0, n);
-		if (fiPrime_b <= 0.   &&   fiPrime_b >= fiPrime_Low 	&&   fiB <= f0 + EPSILON)
+		if (fiPrime_b <= 0. && fiPrime_b >= fiPrime_Low && fiB <= f0 + EPSILON)
 		{
 			alpha = b;
 			f1 = fiB;
@@ -66,14 +66,14 @@ void lineSearch::operator()(Problem functionName) noexcept
 			//B.begin()
 			while (1)
 			{
-				d = (1 - TETA)*a + TETA*b;
+				d = (1 - TETA) * a + TETA * b;
 				//< Termination test in d >;
 				//T.begin()
 				for (int i = 0; i < n; i++)
-					x1[i] = x0[i] - d*g0[i];
+					x1[i] = x0[i] - d * g0[i];
 				fiD = functionName(x1, g1, n);
 				fiPrime_d = -vecProd(g1, g0, n);
-				if (fiPrime_d <= 0.   &&   fiPrime_d >= fiPrime_Low   &&   fiD <= f0 + EPSILON)
+				if (fiPrime_d <= 0. && fiPrime_d >= fiPrime_Low && fiD <= f0 + EPSILON)
 				{
 					alpha = d;
 					f1 = fiD;
@@ -106,7 +106,7 @@ void lineSearch::operator()(Problem functionName) noexcept
 	while (1)
 	{
 		length = b - a;
-		c = (a*fiPrime_b - b*fiPrime_a) / (fiPrime_b - fiPrime_a);
+		c = (a * fiPrime_b - b * fiPrime_a) / (fiPrime_b - fiPrime_a);
 		// < Update  a,b,c >
 		// U3.begin()
 		if (a < c && c < b)
@@ -114,31 +114,31 @@ void lineSearch::operator()(Problem functionName) noexcept
 			// < Termination test in c >
 			// T.begin()
 			for (int i = 0; i < n; i++)
-				x1[i] = x0[i] - c*g0[i];
+				x1[i] = x0[i] - c * g0[i];
 			fiC = functionName(x1, g1, n);
 			fiPrime_c = -vecProd(g1, g0, n);
-			if (fiPrime_c <= 0.   &&   fiPrime_c >= fiPrime_Low    &&    fiC <= f0 + EPSILON)
+			if (fiPrime_c <= 0. && fiPrime_c >= fiPrime_Low && fiC <= f0 + EPSILON)
 			{
 				alpha = c;
 				f1 = fiC;
 				return;
 			}
 			// T.end()
-			if (fiPrime_c < 0.   &&  fiC > f0 + EPSILON)
+			if (fiPrime_c < 0. && fiC > f0 + EPSILON)
 			{
 				b = c;
 				// < Bisection on [a,b] >
 				//B.begin()
 				while (1)
 				{
-					d = (1 - TETA)*a + TETA*b;
+					d = (1 - TETA) * a + TETA * b;
 					//< Termination test in d >;
 					//T.begin()
 					for (int i = 0; i < n; i++)
-						x1[i] = x0[i] - d*g0[i];
+						x1[i] = x0[i] - d * g0[i];
 					fiD = functionName(x1, g1, n);
 					fiPrime_d = -vecProd(g1, g0, n);
-					if (fiPrime_d <= 0.   &&   fiPrime_d >= fiPrime_Low   &&   fiD <= f0 + EPSILON)
+					if (fiPrime_d <= 0. && fiPrime_d >= fiPrime_Low && fiD <= f0 + EPSILON)
 					{
 						alpha = d;
 						f1 = fiD;
@@ -165,13 +165,13 @@ void lineSearch::operator()(Problem functionName) noexcept
 			else
 				if (fiPrime_c >= 0.)
 				{
-					c1 = (c*fiPrime_b - b*fiPrime_c) / (fiPrime_b - fiPrime_c);
+					c1 = (c * fiPrime_b - b * fiPrime_c) / (fiPrime_b - fiPrime_c);
 					fiPrime_b = fiPrime_c;
 					b = c;
 				}
 				else
 				{
-					c1 = (a*fiPrime_c - c*fiPrime_a) / (fiPrime_c - fiPrime_a);
+					c1 = (a * fiPrime_c - c * fiPrime_a) / (fiPrime_c - fiPrime_a);
 					a = c;
 					fiPrime_a = fiPrime_c;
 				}
@@ -186,31 +186,31 @@ void lineSearch::operator()(Problem functionName) noexcept
 			// < Termination test in c >
 			// T.begin()
 			for (int i = 0; i < n; i++)
-				x1[i] = x0[i] - c*g0[i];
+				x1[i] = x0[i] - c * g0[i];
 			fiC = functionName(x1, g1, n);
 			fiPrime_c = -vecProd(g1, g0, n);
-			if (fiPrime_c <= 0.   &&   fiPrime_c >= fiPrime_Low   &&   fiC <= f0 + EPSILON)
+			if (fiPrime_c <= 0. && fiPrime_c >= fiPrime_Low && fiC <= f0 + EPSILON)
 			{
 				alpha = c;
 				f1 = fiC;
 				return;
 			}
 			// T.end()
-			if (fiPrime_c < 0.   &&  fiC > f0 + EPSILON)
+			if (fiPrime_c < 0. && fiC > f0 + EPSILON)
 			{
 				b = c;
 				// < Bisection on [a,b] >
 				//B.begin()
 				while (1)
 				{
-					d = (1 - TETA)*a + TETA*b;
+					d = (1 - TETA) * a + TETA * b;
 					//< Termination test in d >;
 					//T.begin()
 					for (int i = 0; i < n; i++)
-						x1[i] = x0[i] - d*g0[i];
+						x1[i] = x0[i] - d * g0[i];
 					fiD = functionName(x1, g1, n);
 					fiPrime_d = -vecProd(g1, g0, n);
-					if (fiPrime_d <= 0.   &&   fiPrime_d >= fiPrime_Low   &&  fiD <= f0 + EPSILON)
+					if (fiPrime_d <= 0. && fiPrime_d >= fiPrime_Low && fiD <= f0 + EPSILON)
 					{
 						alpha = d;
 						f1 = fiD;
@@ -254,31 +254,31 @@ void lineSearch::operator()(Problem functionName) noexcept
 			// < Termination test in c >
 			// T.begin()
 			for (int i = 0; i < n; i++)
-				x1[i] = x0[i] - c*g0[i];
+				x1[i] = x0[i] - c * g0[i];
 			fiC = functionName(x1, g1, n);
 			fiPrime_c = -vecProd(g1, g0, n);
-			if (fiPrime_c <= 0.   &&   fiPrime_c >= fiPrime_Low 	&&   fiC <= f0 + EPSILON)
+			if (fiPrime_c <= 0. && fiPrime_c >= fiPrime_Low && fiC <= f0 + EPSILON)
 			{
 				alpha = c;
 				f1 = fiC;
 				return;
 			}
 			// T.end()
-			if (fiPrime_c < 0.   &&  fiC > f0 + EPSILON)
+			if (fiPrime_c < 0. && fiC > f0 + EPSILON)
 			{
 				b = c;
 				// < Bisection on [a,b] >
 				//B.begin()
 				while (1)
 				{
-					d = (1 - TETA)*a + TETA*b;
+					d = (1 - TETA) * a + TETA * b;
 					//< Termination test in d >;
 					//T.begin()
 					for (int i = 0; i < n; i++)
-						x1[i] = x0[i] - d*g0[i];
+						x1[i] = x0[i] - d * g0[i];
 					fiD = functionName(x1, g1, n);
 					fiPrime_d = -vecProd(g1, g0, n);
-					if (fiPrime_d <= 0.   &&   fiPrime_d >= fiPrime_Low   &&   fiD <= f0 + EPSILON)
+					if (fiPrime_d <= 0. && fiPrime_d >= fiPrime_Low && fiD <= f0 + EPSILON)
 					{
 						alpha = d;
 						f1 = fiD;
