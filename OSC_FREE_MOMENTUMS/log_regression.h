@@ -48,7 +48,7 @@ public:
 			z = X_train[i];
 			tmp = std::inner_product(z, z + n, x, double{});
 
-			if (0 == y[i])								
+			if (0 == y[i])
 				fx += log(sigmoid(-tmp));
 			else
 				fx += log(sigmoid(tmp));
@@ -64,7 +64,7 @@ public:
 			for (size_t i = 0; i < n; ++i)
 				g[i] += X_train[j][i] * tmp;
 		}
-	
+
 		return -fx;
 	}
 
@@ -121,16 +121,16 @@ template <class DataT>
 one_layer_log_regr<DataT>* IrisLoader(std::string s)
 {
 	one_layer_log_regr<DataT>* a = new one_layer_log_regr<DataT>();
-	
+
 	size_t nTrains{ 120 };
 	size_t nTests{ 30 };
 	size_t nNeurons{ 3 };
 
-	a->n = 5; 
+	a->n = 5;
 	a->p = new double[nTrains];
 	a->y = new uint8_t[nTrains];
 	a->name = "Iris";
-	
+
 	a->X_train = new double* [nTrains];
 	for (int i = 0; i < nTrains; ++i)
 	{
@@ -143,7 +143,7 @@ one_layer_log_regr<DataT>* IrisLoader(std::string s)
 	}
 
 	//For each neuron
-	a->onehot_train = new uint8_t* [nNeurons];
+	a->onehot_train = new uint8_t * [nNeurons];
 
 	for (int i = 0; i < nNeurons; ++i)
 	{
@@ -211,7 +211,7 @@ one_layer_log_regr<DataT>* IrisLoader(std::string s)
 			for (size_t j = 0; j < 4; ++j)
 			{
 				ifs >> d >> c;
-				a->X_test[inds[i]-a->n_train][j] = d;
+				a->X_test[inds[i] - a->n_train][j] = d;
 			}
 			a->X_test[inds[i] - a->n_train][4] = 1.;
 
@@ -259,12 +259,12 @@ one_layer_log_regr<DataT>* mnistLoader
 	a->y = new uint8_t[nTrains];
 	a->name = "mnist";
 
-	a->X_train = new double * [nTrains];
+	a->X_train = new double* [nTrains];
 	for (int i = 0; i < nTrains; ++i)
 	{
 		a->X_train[i] = new double[785];
 	}
-	a->X_test = new double * [nTests];
+	a->X_test = new double* [nTests];
 	for (int i = 0; i < nTests; ++i)
 	{
 		a->X_test[i] = new double[785];
@@ -331,19 +331,58 @@ one_layer_log_regr<DataT>* mnistLoader
 #include<iostream>
 #include<array>
 
+#include <filesystem>
+using namespace std::filesystem;
+#include <string>
+#include <vector>
+
+path findPathTo(string folder)
+{
+	path curPath = current_path();
+	path tmp{};
+	vector<path> subPaths;
+	for (auto e : curPath)
+	{
+		tmp /= e;
+		subPaths.push_back(tmp);
+	}
+
+	reverse(subPaths.begin(), subPaths.end());
+
+	path found{};
+	for (auto e : subPaths)
+	{
+		for (auto& p : filesystem::directory_iterator(e))
+		{
+			if (p.path().string().substr(p.path().string().size() - 4) == "Data")
+			{
+				found = p.path();
+				break;
+			}
+		}
+		if (found.string().size() > 3)
+			break;
+	}
+	return found;
+}
 void runANNTest()
 {
+	//path to folder "Data"
+	path dataPath = findPathTo("Data");
+
+	//mnist or iris
+
 	one_layer_log_regr<double>* a = mnistLoader<double>
 		(
-			"Data/mnist/train-images.idx3-ubyte", 
-			"Data/mnist/train-labels.idx1-ubyte", 
-			"Data/mnist/t10k-images.idx3-ubyte", 
-			"Data/mnist/t10k-labels.idx1-ubyte"
-		);
+			dataPath.string() + "/mnist/train-images.idx3-ubyte",
+			dataPath.string() + "/mnist/train-labels.idx1-ubyte",
+			dataPath.string() + "/mnist/t10k-images.idx3-ubyte",
+			dataPath.string() + "/mnist/t10k-labels.idx1-ubyte"
+			);
 
 	/*
-	one_layer_log_regr<double>* a = IrisLoader<double>("Data/Iris/Iris.txt");
-    */
+	one_layer_log_regr<double>* a = IrisLoader<double>(dataPath.string() +"/Iris/Iris.txt");
+	*/
 
 	a->EPS = 1e-0;
 
@@ -351,17 +390,17 @@ void runANNTest()
 	{
 		auto st = chrono::high_resolution_clock::now();
 
-		problem* p = a;  
+		problem* p = a;
 		a->set_y(j);
 		phasePrimitives prmtv{ p->getSize() };
 		//MHB minimizer(prmtv);
 		MNAG minimizer{ prmtv };
-		//momentum_based minimizer{ prmtv };
+		//ADAM minimizer{ prmtv };
 
 		lineSearch lnSrch(prmtv);
 		p->initialize(minimizer.getVariables());
 		minimizer.solve(lnSrch, p);
-	//	minimizer.adam(p);
+		//	minimizer.solve(p);			//only for "ADAM"
 		auto diff = chrono::high_resolution_clock::now() - st;
 		auto time = chrono::duration_cast<chrono::microseconds>(diff);
 

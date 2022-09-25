@@ -9,7 +9,7 @@ int main()
 {
 //	runUCONTests();
 
-	run_tests_with_hessian();
+//	run_tests_with_hessian();
 
-//	runANNTest();
+	runANNTest();
 }

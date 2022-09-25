@@ -13,7 +13,7 @@ double sigmoid(double x)
 }
 
 template <class DataT>
-class one_layer_log_regr 
+class one_layer_log_regr
 {
 public:
 	long int n;
@@ -103,14 +103,7 @@ public:
 			tmp = std::inner_product(z, z + n, x, double{});
 			p[i] = sigmoid(tmp) - y[i];
 		}
-		/*
-		for (size_t i = 0; i < n; ++i)
-		{
-			g[i] = 0.;
-			for (size_t j = 0; j < n_train; ++j)
-				g[i] += X_train[j][i] * p[j];
-		}
-		*/
+
 		for (size_t i = 0; i < n; ++i)
 			g[i] = 0.;
 
@@ -180,12 +173,12 @@ one_layer_log_regr< DataT>* IrisLoader(std::string s)
 	a->y = new uint8_t[nTrains];
 	a->name = "Iris";
 
-	a->X_train = new double * [nTrains];
+	a->X_train = new double* [nTrains];
 	for (int i = 0; i < nTrains; ++i)
 	{
 		a->X_train[i] = new double[5];
 	}
-	a->X_test = new double * [nTests];
+	a->X_test = new double* [nTests];
 	for (int i = 0; i < nTests; ++i)
 	{
 		a->X_test[i] = new double[5];
@@ -308,12 +301,12 @@ one_layer_log_regr<DataT>* mnistLoader
 	a->y = new uint8_t[nTrains];
 	a->name = "mnist";
 
-	a->X_train = new double * [nTrains];
+	a->X_train = new double* [nTrains];
 	for (int i = 0; i < nTrains; ++i)
 	{
 		a->X_train[i] = new double[785];
 	}
-	a->X_test = new double * [nTests];
+	a->X_test = new double* [nTests];
 	for (int i = 0; i < nTests; ++i)
 	{
 		a->X_test[i] = new double[785];
@@ -377,18 +370,59 @@ one_layer_log_regr<DataT>* mnistLoader
 }
 
 //45 --------------ANN ------------------------------------------------------------------
+#include<iostream>
+#include<string>
 
-one_layer_log_regr< double>* a =
-mnistLoader<double>
+#include <filesystem>
+using namespace std::filesystem;
+#include <string>
+#include <vector>
+
+path findPathTo(string folder)
+{
+	path curPath = current_path();
+	path tmp{};
+	vector<path> subPaths;
+	for (auto e : curPath)
+	{
+		tmp /= e;
+		subPaths.push_back(tmp);
+	}
+
+	reverse(subPaths.begin(), subPaths.end());
+
+	path found{};
+	for (auto e : subPaths)
+	{
+		for (auto& p : filesystem::directory_iterator(e))
+		{
+			if (p.path().string().substr(p.path().string().size() - 4) == "Data")
+			{
+				found = p.path();
+				break;
+			}
+		}
+		if (found.string().size() > 3)
+			break;
+	}
+	return found;
+}
+
+//path to folder "Data"
+path dataPath = findPathTo("Data");
+
+//mnist or iris
+one_layer_log_regr<double>* a = mnistLoader<double>
 (
-	"Data/mnist/train-images.idx3-ubyte",
-	"Data/mnist/train-labels.idx1-ubyte",
-	"Data/mnist/t10k-images.idx3-ubyte",
-	"Data/mnist/t10k-labels.idx1-ubyte"
+	dataPath.string() + "/mnist/train-images.idx3-ubyte",
+	dataPath.string() + "/mnist/train-labels.idx1-ubyte",
+	dataPath.string() + "/mnist/t10k-images.idx3-ubyte",
+	dataPath.string() + "/mnist/t10k-labels.idx1-ubyte"
 	);
 /*
-one_layer_log_regr<double>* a = IrisLoader<double>("Data/Iris/Iris.txt");
+one_layer_log_regr<double>* a = IrisLoader<double>(dataPath.string() +"/Iris/Iris.txt");
 */
+
 void Initial_ANN
 (
 	double* x
@@ -410,7 +444,7 @@ double ANNValGrad
 )
 {
 	double z = a->valGrad(x, g);
-///////	cout << z << endl;               ///////////
+	///////	cout << z << endl;               ///////////
 	return z;
 }
 

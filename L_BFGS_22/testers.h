@@ -79,8 +79,8 @@ void runUCONTests()
 		l_bgfs minimizer{ prmtv, 10 };
 		v[i]->initialize(minimizer.getVariables());
 
-	//	if(i==34)
-	//		lnSrch.isGeneral = false;
+		//	if(i==34)
+		//		lnSrch.isGeneral = false;
 		minimizer.solve(lnSrch, v[i].get());
 
 		auto diff = chrono::high_resolution_clock::now() - st;
@@ -102,22 +102,57 @@ void runUCONTests()
 
 //--------------------------------  Benchmarking ANN  ---------------------------------------
 #include<iostream>
+#include<string>
+#include <filesystem>
+using namespace std::filesystem;
+#include <string>
+#include <vector>
+
+path findPathTo(string folder)
+{
+	path curPath = current_path();
+	path tmp{};
+	vector<path> subPaths;
+	for (auto e : curPath)
+	{
+		tmp /= e;
+		subPaths.push_back(tmp);
+	}
+
+	reverse(subPaths.begin(), subPaths.end());
+
+	path found{};
+	for (auto e : subPaths)
+	{
+		for (auto& p : filesystem::directory_iterator(e))
+		{
+			if (p.path().string().substr(p.path().string().size() - 4) == "Data")
+			{
+				found = p.path();
+				break;
+			}
+		}
+		if (found.string().size() > 3)
+			break;
+	}
+	return found;
+}
 
 void runANNTest()
 {
-	//mnist or iris
+	//path to folder "Data"
+	path dataPath = findPathTo("Data");
 
-	/**/
+	//mnist or iris
 	one_layer_log_regr<double>* a = mnistLoader<double>
 		(
-			"Data/mnist/train-images.idx3-ubyte",
-			"Data/mnist/train-labels.idx1-ubyte",
-			"Data/mnist/t10k-images.idx3-ubyte",
-			"Data/mnist/t10k-labels.idx1-ubyte"
+			dataPath.string() + "/mnist/train-images.idx3-ubyte",
+			dataPath.string() + "/mnist/train-labels.idx1-ubyte",
+			dataPath.string() + "/mnist/t10k-images.idx3-ubyte",
+			dataPath.string() + "/mnist/t10k-labels.idx1-ubyte"
 			);
-	
 	/*
-	one_layer_log_regr<double>* a = IrisLoader<double>("Data/Iris/Iris.txt");
+	one_layer_log_regr<double>* a = IrisLoader<double>(dataPath.string() +"/Iris/Iris.txt");
 	*/
 
 	a->EPS = 1e-0;      //Tolerance
@@ -133,7 +168,7 @@ void runANNTest()
 		l_bgfs minimizer{ prmtv, 5 };
 		lineSearch lnSrch(prmtv);
 		p->initialize(minimizer.getVariables());
-	//	lnSrch.isGeneral = false;
+		//	lnSrch.isGeneral = false;
 		minimizer.solve(lnSrch, p);
 
 		auto diff = chrono::high_resolution_clock::now() - st;
