@@ -85,7 +85,7 @@ void MHB::solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept
 		if (ppr->stoppingCondition(g0))
 			return;
 
-		//uncomment for "runANNTest()"
+		// uncomment for "runANNTest()"
 		// cout << "f0=" << f0<<   "   " << "|g| =" <<  infNorm(g0,n)  << ",  evaluations:  " << FuncGradEvaluations << endl;   //
 
 		f0 = f1;
@@ -100,21 +100,26 @@ void MHB::solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept
 template<class ProblemPtr>
 void MHB::precond_solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept
 {
+	FuncGradEvaluations = 0;
+	LineSearchCunter = 0;
+
 	dir = new double[n];
 	f0 = f1 = ppr->valGradHessian(x0, g0, hessian);
+	++FuncGradEvaluations;
 
 	if (!hessian.l_iCholesky())
 		return;
 
 	if (ppr->stoppingCondition(g0))  return;
 
-	//მიმართულების გამოთვლა dir-ში
+	//Preconditioned descent direction in "dir"
 	hessian.LLTinverseByVector(g0, dir);
 
 	while (true)
 	{
 		if (f0 <= f1 || counter == 100000)
 		{
+			++LineSearchCunter;
 			alpha = lnSrch(ppr);
 			counter = 0;
 		}
@@ -132,7 +137,8 @@ void MHB::precond_solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept
 
 		for (int i = 0; i < n; ++i)
 			x1[i] = x0[i] + moment[i] - alpha * dir[i];
-		f1 = ppr->valGrad(x0, g0);
+		f1 = ppr->valGrad(x1, g1);
+		++FuncGradEvaluations;
 		++counter;
 	}
 

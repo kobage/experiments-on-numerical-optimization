@@ -1,4 +1,4 @@
-#pragma once  
+﻿#pragma once  
 #include <string>
 #include"problems.h"
 #include<algorithm>
@@ -19,16 +19,23 @@ class MNAG
 	double*& moment;
 
 	long int& FuncGradEvaluations;
+	long int ValueEvaluations{};
 	long int counter{};
 	long int LineSearchCunter{};
-
 	double alpha{0.001};
 
+	MpSpMtr hessian; 
 public:
 	MNAG(phasePrimitives& prmt)
 //	: ppr{ prmt.ppr }, n{ prmt.n }, f0{ prmt.f0 }, f1{ prmt.f1 }, x0{ prmt.x0 }, x1{ prmt.x1 }, g0{ prmt.g0 },
 	:  n{ prmt.n }, f0{ prmt.f0 }, f1{ prmt.f1 }, x0{ prmt.x0 }, x1{ prmt.x1 }, g0{ prmt.g0 },
-		g1{ prmt.g1 }, dir{ prmt.dir }, moment{ prmt.moment }, FuncGradEvaluations{ prmt.FuncGradEvaluations }	{ }
+		g1{ prmt.g1 }, dir{ prmt.dir }, moment{ prmt.moment }, FuncGradEvaluations{ prmt.FuncGradEvaluations }	
+	{
+		hessian.matrix.resize(n);
+		hessian.LLT.resize(n);
+		hessian.n = n;
+	}
+
 	~MNAG() {}
 
 	long int getSize() const noexcept { return n; }
@@ -38,32 +45,42 @@ public:
 	double* getGradient() const noexcept { return g0; }
 	double getValue() const noexcept { return f0; }
 	
-	//solver
+	//solvers
 	template<class ProblemPtr>
 	void solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept;
+
+	template<class ProblemPtr>
+	void solve_BigBeta(lineSearch& lnSrch, ProblemPtr ppr) noexcept;
+
+	template<class ProblemPtr>
+	void solve_RandCorrection(lineSearch& lnSrch, ProblemPtr ppr) noexcept;
 
 	void printStats()
 	{
 		std::cout << "Algorithm: MNAG,    Objective function:  " << f0 <<
-			",   Value-Grad evaluations:  " << getEvaluations() <<
+			",   Value-Grad evaluations:  " << getEvaluations() << ",  " << std::endl
+			<< "Values evaluations : " << ValueEvaluations <<
 			",   Restarts (line searches):  " << getRestarts() << std::endl;
 	}
 };
+
+#include<random>
+#include<iomanip>
 template<class ProblemPtr>
 void  MNAG::solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept
 {
-	FuncGradEvaluations = 0;
-	LineSearchCunter = 0;
-
-	f0 = f1 = ppr->valGrad(x0, g0);
-	++FuncGradEvaluations;
-	if (ppr->stoppingCondition(g0))
-		return;
-
 	while (true)
 	{
 		if (f0 <= f1 || counter == 100000)
 		{
+			if (1 != counter)
+			{
+				f0 = ppr->valGrad(x0, g0);
+				++FuncGradEvaluations;
+			}
+			if (ppr->stoppingCondition(g0))
+				return;
+
 			dir = g0;
 			++LineSearchCunter;
 			alpha = lnSrch(ppr);
@@ -74,10 +91,6 @@ void  MNAG::solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept
 			moment[i] = x1[i] - x0[i];
 		swap(x0, x1);
 		swap(g0, g1);
-
-		if (ppr->stoppingCondition(g0))
-			return;
-
 		f0 = f1;
 		for (int i = 0; i < n; ++i)
 			x1[i] = x0[i] + moment[i];
@@ -92,12 +105,128 @@ void  MNAG::solve(lineSearch& lnSrch, ProblemPtr ppr) noexcept
 		}
 
 		for (int i = 0; i < n; ++i)
-			x1[i] -=  (alpha * g1[i]);
+			x1[i] = x0[i] + moment[i] - alpha * g1[i];
 
-		cout << "f0=" << f0<<   "   " << "|g| =" <<  infNorm(g0,n)  << ",  evaluations:  " << FuncGradEvaluations << endl;   //
+		f1 = ppr->value(x1);
 
-		f1 = ppr->valGrad(x1, g1);
+	//  Statistics for ANN
+	//	cout << "f=" << setw(10) << left <<  f1 << "   " << "|g| =" << setw(10) << left << infNorm(g1, n)
+	//		<< "  evaluations:  " << FuncGradEvaluations << endl;   //
+
+		++ValueEvaluations;
+		++counter;
+	}
+}
+
+#include<random>
+#include<iomanip>
+template<class ProblemPtr>
+void  MNAG::solve_RandCorrection(lineSearch& lnSrch, ProblemPtr ppr) noexcept
+ {
+	default_random_engine dre(std::random_device{}());
+	uniform_real_distribution<double> di(0.5, 1.);
+	double correction_rate{};
+
+	while (true)
+	{
+		if (f0 <= f1 || counter == 100000)
+		{
+			if (1 != counter)
+			{
+				f0 = ppr->valGrad(x0, g0);
+				++FuncGradEvaluations;
+			}
+			if (ppr->stoppingCondition(g0))
+				return;
+
+			dir = g0;
+			++LineSearchCunter;
+			alpha = lnSrch(ppr);
+			counter = 0;
+		}
+
+		for (int i = 0; i < n; ++i)
+			moment[i] = x1[i] - x0[i];
+		swap(x0, x1);
+		swap(g0, g1);
+		f0 = f1;
+
+		correction_rate = di(dre);
+		for (int i = 0; i < n; ++i)
+			x1[i] = x0[i] + correction_rate * moment[i];
+
+		ppr->valGrad(x1, g1);
 		++FuncGradEvaluations;
+		if (ppr->stoppingCondition(g1))
+		{
+			swap(x0, x1);
+			swap(g0, g1);
+			return;
+		}
+
+		for (int i = 0; i < n; ++i)
+			x1[i] = x0[i] + moment[i] - alpha * g1[i];
+		++counter;
+
+		f1 = ppr->value(x1);
+
+		//  Statistics for ANN
+		// cout << "f=" << setw(10) << left <<  f1 << "   " << "|g| =" << setw(10) << left << infNorm(g1, n)
+		//	<< "  evaluations:  " << FuncGradEvaluations << endl;   //
+
+		++ValueEvaluations;
+		++counter;
+	}
+}
+
+template<class ProblemPtr>
+void  MNAG::solve_BigBeta(lineSearch& lnSrch, ProblemPtr ppr) noexcept
+{
+	while (true)
+	{
+		if (f0 <= f1 || counter == 100000)
+		{
+			if (1 != counter)
+			{
+				f0 = ppr->valGrad(x0, g0);
+				++FuncGradEvaluations;
+			}
+			if (ppr->stoppingCondition(g0))
+				return;
+
+			dir = g0;
+			++LineSearchCunter;
+			alpha = lnSrch(ppr);
+			counter = 0;
+		}
+
+		for (int i = 0; i < n; ++i)
+			moment[i] = x1[i] - x0[i];
+		swap(x0, x1);
+		swap(g0, g1);
+		f0 = f1;
+		for (int i = 0; i < n; ++i)
+			x1[i] = x0[i] + moment[i]; 
+
+		ppr->valGrad(x1, g1);
+		++FuncGradEvaluations;
+		if (ppr->stoppingCondition(g1))
+		{
+			swap(x0, x1);
+			swap(g0, g1);
+			return;
+		}
+
+		for (int i = 0; i < n; ++i)
+			x1[i] = x0[i] + 1.0005 * moment[i] - alpha * g1[i];
+
+		f1 = ppr->value(x1);
+
+		//  Statistics for ANN
+		//	cout << "f=" << setw(10) << left <<  f1 << "   " << "|g| =" << setw(10) << left << infNorm(g1, n)
+		//		<< "  evaluations:  " << FuncGradEvaluations << endl;   //
+
+		++ValueEvaluations;
 		++counter;
 	}
 }

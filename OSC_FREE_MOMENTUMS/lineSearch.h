@@ -7,15 +7,15 @@ public:
 	long int& n;
 	double& f0;			
 	double& f1;
-	double*& x0;
+	double*& x0; 
 	double*& x1;    
 	double*& g1;
 	double*& g0;
 	double*& dir;
 	long int& FuncGradEvaluations;
 
-	const double DELTA = 0.1;	// used in the Wolfe conditions
-	const double SIGMA = 0.9;	// used in the Wolfe conditions
+	const double DELTA = 0.1;     // 0.33;	0.1;  // used in the Wolfe conditions
+	const double SIGMA =   0.9;   // 0.34;	0.9;  // used in the Wolfe conditions
 
 	const double EPSILON = 1E-6; // used in the approximate Wolfe termination T2
 	const double GAMA = 0.66;	// determines when a bisection step s performed in (L2)

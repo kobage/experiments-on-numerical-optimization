@@ -7,9 +7,9 @@ using namespace std;
 
 int main()
 {
-//	runUCONTests();
+	runUCONTests();
 
 //	run_tests_with_hessian();
 
-	runANNTest();
+//	runANNTest();
 }
