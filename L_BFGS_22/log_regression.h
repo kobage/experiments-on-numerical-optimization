@@ -1,6 +1,5 @@
 #pragma once
 #include"problems.h"
-#include"mnist_loader.h"
 #include<numeric>
 #include<chrono>
 #include<random>
