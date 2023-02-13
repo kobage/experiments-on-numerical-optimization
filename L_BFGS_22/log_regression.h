@@ -25,10 +25,9 @@ public:
 	DataT** X_train{};
 	DataT** X_test{};
 	double* p{};					 //np.matmul(X_train, z)) - y
-	uint8_t** onehot_test{};
-	uint8_t** onehot_train{};
+	uint8_t* labels_train;
+	uint8_t* labels_test;
 	uint8_t* y{};
-
 	std::string name{};
 
 	long int  getSize() const { return n; }
@@ -81,7 +80,11 @@ public:
 
 	void set_y(size_t currentNeuron)
 	{
-		std::copy(onehot_train[currentNeuron], onehot_train[currentNeuron] + n_train, y);
+		for (size_t j = 0; j < n_train; ++j)
+		{
+			if (labels_train[j] == currentNeuron) y[j] = 1;
+			else y[j] = 0;
+		}
 	}
 
 	~one_layer_log_regr()
@@ -101,17 +104,8 @@ public:
 		}
 		delete[] X_test;
 
-		for (int i = 0; i < n_neurons; ++i)
-		{
-			delete[] onehot_train[i];
-		}
-		delete[] onehot_train;
-
-		for (int i = 0; i < n_neurons; ++i)
-		{
-			delete[] onehot_test[i];
-		}
-		delete[] onehot_test;
+		delete[] labels_train;
+		delete[] labels_test;
 	}
 };
 
@@ -142,19 +136,8 @@ one_layer_log_regr<DataT>* IrisLoader(std::string s)
 		a->X_test[i] = new double[5];
 	}
 
-	//For each neuron
-	a->onehot_train = new uint8_t * [nNeurons];
-
-	for (int i = 0; i < nNeurons; ++i)
-	{
-		a->onehot_train[i] = new uint8_t[nTrains];
-	}
-
-	a->onehot_test = new uint8_t * [nNeurons];
-	for (int i = 0; i < nNeurons; ++i)
-	{
-		a->onehot_test[i] = new uint8_t[nTests];
-	}
+	a->labels_train = new uint8_t[nTrains];
+	a->labels_test = new uint8_t[nTests];
 
 	a->n_train = nTrains;
 	a->n_neurons = nNeurons;
@@ -174,7 +157,7 @@ one_layer_log_regr<DataT>* IrisLoader(std::string s)
 	char c{};
 	std::string str{};
 
-	//fill
+	//fill	
 	for (size_t i = 0; i < 150; ++i)
 	{
 		if (inds[i] < a->n_train)
@@ -188,23 +171,12 @@ one_layer_log_regr<DataT>* IrisLoader(std::string s)
 			a->X_train[inds[i]][4] = 1.;
 			ifs >> str;
 			if (str == "setosa")
-			{
-				a->onehot_train[0][inds[i]] = 1;
-				a->onehot_train[1][inds[i]] = 0;
-				a->onehot_train[2][inds[i]] = 0;
-			}
-			if (str == "versicolor")
-			{
-				a->onehot_train[0][inds[i]] = 0;
-				a->onehot_train[1][inds[i]] = 1;
-				a->onehot_train[2][inds[i]] = 0;
-			}
-			if (str == "virginica")
-			{
-				a->onehot_train[0][inds[i]] = 0;
-				a->onehot_train[1][inds[i]] = 0;
-				a->onehot_train[2][inds[i]] = 1;
-			}
+				a->labels_train[inds[i]] = 0;
+			else
+				if (str == "versicolor")
+					a->labels_train[inds[i]] = 1;
+				else
+					a->labels_train[inds[i]] = 2;
 		}
 		else
 		{
@@ -217,23 +189,12 @@ one_layer_log_regr<DataT>* IrisLoader(std::string s)
 
 			ifs >> str;
 			if (str == "setosa")
-			{
-				a->onehot_test[0][inds[i] - a->n_train] = 1;
-				a->onehot_test[1][inds[i] - a->n_train] = 0;
-				a->onehot_test[2][inds[i] - a->n_train] = 0;
-			}
-			if (str == "versicolor")
-			{
-				a->onehot_test[0][inds[i] - a->n_train] = 0;
-				a->onehot_test[1][inds[i] - a->n_train] = 1;
-				a->onehot_test[2][inds[i] - a->n_train] = 0;
-			}
-			if (str == "virginica")
-			{
-				a->onehot_test[0][inds[i] - a->n_train] = 0;
-				a->onehot_test[1][inds[i] - a->n_train] = 0;
-				a->onehot_test[2][inds[i] - a->n_train] = 1;
-			}
+				a->labels_test[inds[i] - a->n_train] = 0;
+			else
+				if (str == "versicolor")
+					a->labels_test[inds[i] - a->n_train] = 1;
+				else
+					a->labels_test[inds[i] - a->n_train] = 2;
 		}
 	}
 	return a;
@@ -270,57 +231,70 @@ one_layer_log_regr<DataT>* mnistLoader
 		a->X_test[i] = new double[785];
 	}
 
-	//For each neuron
-	a->onehot_train = new uint8_t * [nNeurons];
-
-	for (int i = 0; i < nNeurons; ++i)
-	{
-		a->onehot_train[i] = new uint8_t[nTrains];
-	}
-
-	a->onehot_test = new uint8_t * [nNeurons];
-	for (int i = 0; i < nNeurons; ++i)
-	{
-		a->onehot_test[i] = new uint8_t[nTests];
-	}
+	a->labels_train = new uint8_t[nTrains];
+	a->labels_test = new uint8_t[nTests];
 
 	a->n_train = nTrains;
 	a->n_neurons = nNeurons;
 	a->n_test = nTests;
 
-	mnist_loader train = mnist_loader(pathToTrainData, pathToTrainLabels);
-	mnist_loader test = mnist_loader(pathToTestnData, pathToTestLabels);
-
+	//In blocks, to reuse notion "ifs"
 	//Fill X_train
-	for (size_t i = 0; i < a->n_train; ++i)
 	{
-		train.m_images[i].push_back(1.);
-		std::copy(train.m_images[i].begin(), train.m_images[i].end(), a->X_train[i]);
+		std::string image_file = pathToTrainData;
+		std::ifstream ifs(image_file.c_str(), std::ios::in | std::ios::binary);
+		char p[4];
+		ifs.read(p, 4); ifs.read(p, 4); ifs.read(p, 4); ifs.read(p, 4);
+		//as we already have parameter values, so just read with zero effect
+		char* q = new char[784];
+		for (int i = 0; i < 60000; ++i) {
+			ifs.read(q, 784);
+			for (int j = 0; j < 784; ++j) {
+				a->X_train[i][j] = q[j] / 255.0;
+			}
+			a->X_train[i][784] = 1.;
+		}
+		delete[] q;
 	}
-	//Fill X_test
-	for (size_t i = 0; i < a->n_test; ++i)
+	//Filling "labels_train"
 	{
-		test.m_images[i].push_back(1.);
-		std::copy(test.m_images[i].begin(), test.m_images[i].end(), a->X_test[i]);
-	}
-
-	//Fill onehot_train
-	for (size_t j = 0; j < a->n_train; ++j)
-	{
-		for (size_t i = 0; i < nNeurons; ++i)
-		{
-			if (train.m_labels.at(j) == i) a->onehot_train[i][j] = 1;
-			else a->onehot_train[i][j] = 0;
+		std::string image_file = pathToTrainLabels;
+		std::ifstream ifs(image_file.c_str(), std::ios::in | std::ios::binary);
+		char p[4];
+		ifs.read(p, 4); ifs.read(p, 4);
+		for (int i = 0; i < 60000; ++i) {
+			ifs.read(p, 1);
+			int label = p[0];
+			a->labels_train[i] = label;   //directly p[0]? later?
 		}
 	}
-
-	//Fill onehot_test
-	for (size_t j = 0; j < a->n_test; ++j)
+	//Filling "X_tests"
 	{
-		for (size_t i = 0; i < nNeurons; ++i)
-		{
-			if (test.m_labels.at(j) == i) a->onehot_test[i][j] = 1;
-			else a->onehot_test[i][j] = 0;
+		std::string image_file = pathToTestnData;
+		std::ifstream ifs(image_file.c_str(), std::ios::in | std::ios::binary);
+		char p[4];
+		ifs.read(p, 4); ifs.read(p, 4); ifs.read(p, 4); ifs.read(p, 4);
+		//as we already have parameter values, so just read with zero effect
+		char* q = new char[784];
+		for (int i = 0; i < 10000; ++i) {
+			ifs.read(q, 784);
+			for (int j = 0; j < 784; ++j) {
+				a->X_test[i][j] = q[j] / 255.0;
+			}
+			a->X_test[i][784] = 1.;
+		}
+		delete[] q;
+	}
+	//Filling "labels_test"
+	{
+		std::string image_file = pathToTestLabels;
+		std::ifstream ifs(image_file.c_str(), std::ios::in | std::ios::binary);
+		char p[4];
+		ifs.read(p, 4); ifs.read(p, 4);
+		for (int i = 0; i < 10000; ++i) {
+			ifs.read(p, 1);
+			int label = p[0];
+			a->labels_test[i] = label;   //directly p[0]? later?
 		}
 	}
 
